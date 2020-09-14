@@ -1,6 +1,6 @@
 module.exports = (app) => {
-	const enums = require("../controllers/enums.controller.js");
 
+	const enums = require("../controllers/enums.controller");
 	var router = require("express").Router();
 
 	router.get("/teams", enums.enumTeams);
@@ -12,10 +12,7 @@ module.exports = (app) => {
 	router.get("/competitions", enums.enumCompetitions);
 	router.get("/players", enums.enumPlayers);
 
-	//router.get("/:id", enums.findOne);
-	//router.post("/", tutorials.create);
-	//router.put("/:id", tutorials.update);
-	//router.delete("/:id", tutorials.delete);
+	// router.post("/:type", enums.insertOrUpdate);
 
 	app.use("/api/enums", router);
 };
