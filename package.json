@@ -1,0 +1,17 @@
+{
+	"name": "stats4fun-api",
+	"version": "1.0.0",
+	"description": "4Fun Futsal Team stats api",
+	"main": "server.js",
+	"scripts": {
+		"test": "echo \"TEST\" && exit 1"
+	},
+	"author": "ujeb",
+	"license": "ISC",
+	"dependencies": {
+		"body-parser": "^1.19.0",
+		"cors": "^2.8.5",
+		"express": "^4.17.1",
+		"mysql": "^2.18.1"
+	}
+}
