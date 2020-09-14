@@ -140,3 +140,23 @@ exports.enumSeasons = (req, res) => {
 		}
 	});
 };
+
+exports.enumPlayers = (req, res) => {
+	var connection = mysql.createConnection({
+		host: dbConfig.host,
+		user: dbConfig.user,
+		password: dbConfig.password,
+	});
+
+	var command = `call fun.ListEnumPlayers(0)`;
+	connection.query(command, true, (error, results, fields) => {
+		if (error) res.send(error.message);
+		else {
+			var result = [];
+			results[0].forEach(function (row) {
+				result.push({ id: row.Id, name: row.Name });
+			});
+			res.json(result);
+		}
+	});
+};
