@@ -2,76 +2,55 @@
 -- DROP STORED PROCEDURES
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 drop procedure fun.ListEnumCompetitions;
-
 drop procedure fun.ListEnumTeams;
-
 drop procedure fun.ListEnumPlayerPositions;
-
 drop procedure fun.ListEnumMatchTypes;
-
 drop procedure fun.ListEnumMatchResults;
-
 drop procedure fun.ListEnumPlaces;
-
 drop procedure fun.ListEnumStates;
-
 drop procedure fun.ListEnumPlayers;
-
 drop procedure fun.ListSeasons;
-
 drop procedure fun.ListMatches;
-
 drop procedure fun.GetMatch;
-
 drop procedure fun.InsertMatch;
-
 drop procedure fun.ModifyMatch;
-
 drop procedure fun.DeleteMatch;
-
 drop procedure fun.MatchesStats;
-
 drop procedure fun.ListMatchPlayerStats;
-
 drop procedure fun.InsertMatchPlayerStats;
-
 drop procedure fun.ModifyMatchPlayerStats;
-
 drop procedure fun.DeleteMatchPlayerStats;
-
 drop procedure fun.ListPlayerStats;
-
 drop procedure fun.GetPlayer;
-
 drop procedure fun.InsertPlayer;
-
 drop procedure fun.ModifyPlayer;
-
 drop procedure fun.DeletePlayer;
-
 drop procedure fun.ListCompetitions;
-
 drop procedure fun.TopPlayerGoals;
-
 drop procedure fun.TopPlayerAssists;
-
 drop procedure fun.TopPlayerPoints;
-
 drop procedure fun.TopPlayerPosNegPoints;
-
 drop procedure fun.BottomPlayerPosNegPoints;
-
 drop procedure fun.TopTeamGoalsScored;
-
 drop procedure fun.TopTeamGoalsTaken;
-
 drop procedure fun.TopTeamScore;
-
 drop procedure fun.BottomTeamScore;
-
 drop procedure fun.AllSeasonsStats;
+drop procedure fun.FixMatchWinLossTie; 
 
-drop procedure fun.FixMatchWinLossTie;
+drop procedure fun.InsertTeam;
+drop procedure fun.ModifyTeam;
+drop procedure fun.InsertCompetition;
+drop procedure fun.ModifyCompetition;
+drop procedure fun.InsertMatchType;
+drop procedure fun.ModifyMatchType;
+drop procedure fun.InsertPlace;
+drop procedure fun.ModifyPlace;
+drop procedure fun.InsertPlayerPosition;
+drop procedure fun.ModifyPlayerPosition;
+drop procedure fun.InsertState;
+drop procedure fun.ModifyState;
+drop procedure fun.ModifyMatchResult;
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- CREATE STORED PROCEDURES
@@ -345,7 +324,7 @@ values
 	);
 
 select
-	SCOPE_IDENTITY() as Id;
+	LAST_INSERT_ID() as Id;
 
 END $ $
 
@@ -643,7 +622,7 @@ values
 	);
 
 select
-	SCOPE_IDENTITY() as Id;
+	LAST_INSERT_ID() as Id;
 
 END $ $
 
@@ -703,7 +682,7 @@ END $ $
 
 CREATE PROCEDURE fun.InsertPlayer (
 	in dateofBirth datetime,
-	in name nvarchar(50),
+	in name nvarchar(100),
 	in number int,
 	in playerPositionId int,
 	in teamId int
@@ -726,13 +705,13 @@ values
 	);
 
 select
-	SCOPE_IDENTITY() as Id;
+	LAST_INSERT_ID() as Id;
 
 END $ $
 
 CREATE PROCEDURE fun.ModifyPlayer (
 	in dateofBirth datetime,
-	in name nvarchar(50),
+	in name nvarchar(100),
 	in number int,
 	in playerPositionId int,
 	in teamId int,
@@ -1249,6 +1228,242 @@ set
 		WHEN (HomeTeamScore = AwayTeamScore) THEN 1
 		ELSE 0
 	END;
+
+END $ $
+
+CREATE PROCEDURE fun.InsertTeam (
+	in name varchar(100)
+) BEGIN
+insert into
+	fun.EnumTeam (
+		Name,
+		StateId
+	)
+values
+	(
+		name,
+		null
+	);
+
+select
+	LAST_INSERT_ID() as Id;
+
+END $ $
+
+CREATE PROCEDURE fun.ModifyTeam (
+	in id int,
+	in name varchar(100),
+	in stateId int
+) BEGIN
+update
+	fun.EnumTeam t
+set
+	t.Name = name,
+	t.StateId = stateId
+where
+	t.Id = id;
+
+select
+	Id;
+
+END $ $
+
+CREATE PROCEDURE fun.InsertCompetition (
+	in name varchar(100)
+) BEGIN
+insert into
+	fun.EnumCompetition (
+		Name,
+		StateId
+	)
+values
+	(
+		name,
+		null
+	);
+
+select
+	LAST_INSERT_ID() as Id;
+
+END $ $
+
+CREATE PROCEDURE fun.ModifyCompetition (
+	in id int,
+	in name varchar(100),
+	in stateId int
+) BEGIN
+update
+	fun.EnumCompetition t
+set
+	t.Name = name,
+	t.StateId = stateId
+where
+	t.Id = id;
+
+select
+	Id;
+
+END $ $
+
+CREATE PROCEDURE fun.InsertMatchType (
+	in name varchar(100)
+) BEGIN
+insert into
+	fun.EnumMatchType (
+		Name,
+		StateId
+	)
+values
+	(
+		name,
+		null
+	);
+
+select
+	LAST_INSERT_ID() as Id;
+
+END $ $
+
+CREATE PROCEDURE fun.ModifyMatchType (
+	in id int,
+	in name varchar(100),
+	in stateId int
+) BEGIN
+update
+	fun.EnumMatchType t
+set
+	t.Name = name,
+	t.StateId = stateId
+where
+	t.Id = id;
+
+select
+	Id;
+
+END $ $
+
+CREATE PROCEDURE fun.InsertPlace (
+	in name varchar(100)
+) BEGIN
+insert into
+	fun.EnumPlace (
+		Name,
+		StateId
+	)
+values
+	(
+		name,
+		null
+	);
+
+select
+	LAST_INSERT_ID() as Id;
+
+END $ $
+
+CREATE PROCEDURE fun.ModifyPlace (
+	in id int,
+	in name varchar(100),
+	in stateId int
+) BEGIN
+update
+	fun.EnumPlace t
+set
+	t.Name = name,
+	t.StateId = stateId
+where
+	t.Id = id;
+
+select
+	Id;
+
+END $ $
+
+CREATE PROCEDURE fun.InsertPlayerPosition (
+	in name varchar(100)
+) BEGIN
+insert into
+	fun.EnumPlayerPosition (
+		Name,
+		StateId
+	)
+values
+	(
+		name,
+		null
+	);
+
+select
+	LAST_INSERT_ID() as Id;
+
+END $ $
+
+CREATE PROCEDURE fun.ModifyPlayerPosition (
+	in id int,
+	in name varchar(100),
+	in stateId int
+) BEGIN
+update
+	fun.EnumPlayerPosition t
+set
+	t.Name = name,
+	t.StateId = stateId
+where
+	t.Id = id;
+
+select
+	Id;
+
+END $ $
+
+CREATE PROCEDURE fun.InsertState (
+	in name varchar(100)
+) BEGIN
+insert into
+	fun.EnumState (
+		Name
+	)
+values
+	(
+		name
+	);
+
+select
+	LAST_INSERT_ID() as Id;
+
+END $ $
+
+CREATE PROCEDURE fun.ModifyState (
+	in id int,
+	in name varchar(100),
+	in stateId int
+) BEGIN
+update
+	fun.EnumState t
+set
+	t.Name = name
+where
+	t.Id = id;
+
+select
+	Id;
+
+END $ $
+
+CREATE PROCEDURE fun.ModifyMatchResult (
+	in id int,
+	in name varchar(100),
+	in stateId int
+) BEGIN
+update
+	fun.EnumMatchResult t
+set
+	t.Name = name
+where
+	t.Id = id;
+
+select
+	Id;
 
 END $ $
 

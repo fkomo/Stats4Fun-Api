@@ -2,23 +2,14 @@
 -- DROP TABLES
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 drop table fun.PlayerStats;
-
 drop table fun.Player;
-
 drop table fun.Match;
-
 drop table fun.EnumTeam;
-
 drop table fun.EnumPlace;
-
 drop table fun.EnumCompetition;
-
 drop table fun.EnumMatchType;
-
 drop table fun.EnumMatchResult;
-
 drop table fun.EnumPlayerPosition;
-
 drop table fun.EnumState;
 
 -------------------------------------------------------------------------------------------------------------------------------------------
@@ -26,13 +17,13 @@ drop table fun.EnumState;
 -------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE fun.EnumState (
 	Id int NOT NULL auto_increment,
-	Name nvarchar(100) NOT NULL,
+	Name nvarchar(100) NOT NULL UNIQUE,
 	primary key (Id)
 );
 
 CREATE TABLE fun.EnumTeam (
 	Id int NOT NULL auto_increment,
-	Name nvarchar(100) NOT NULL,
+	Name nvarchar(100) NOT NULL UNIQUE,
 	StateId int NULL,
 	primary key (Id),
 	FOREIGN KEY (StateId) REFERENCES EnumState(Id)
@@ -40,7 +31,7 @@ CREATE TABLE fun.EnumTeam (
 
 CREATE TABLE fun.EnumPlace (
 	Id int NOT NULL auto_increment,
-	Name nvarchar(100) NOT NULL,
+	Name nvarchar(100) NOT NULL UNIQUE,
 	StateId int NULL,
 	primary key (Id),
 	FOREIGN KEY (StateId) REFERENCES EnumState(Id)
@@ -48,7 +39,7 @@ CREATE TABLE fun.EnumPlace (
 
 CREATE TABLE fun.EnumCompetition (
 	Id int NOT NULL auto_increment,
-	Name nvarchar(100) NOT NULL,
+	Name nvarchar(100) NOT NULL UNIQUE,
 	StateId int NULL,
 	primary key (Id),
 	FOREIGN KEY (StateId) REFERENCES EnumState(Id)
@@ -56,7 +47,7 @@ CREATE TABLE fun.EnumCompetition (
 
 CREATE TABLE fun.EnumMatchType (
 	Id int NOT NULL auto_increment,
-	Name nvarchar(100) NOT NULL,
+	Name nvarchar(100) NOT NULL UNIQUE,
 	StateId int NULL,
 	primary key (Id),
 	FOREIGN KEY (StateId) REFERENCES EnumState(Id)
@@ -64,7 +55,7 @@ CREATE TABLE fun.EnumMatchType (
 
 CREATE TABLE fun.EnumMatchResult (
 	Id int NOT NULL auto_increment,
-	Name nvarchar(100) NOT NULL,
+	Name nvarchar(100) NOT NULL UNIQUE,
 	StateId int NULL,
 	primary key (Id),
 	FOREIGN KEY (StateId) REFERENCES EnumState(Id)
@@ -95,7 +86,7 @@ CREATE TABLE fun.Match (
 
 CREATE TABLE fun.EnumPlayerPosition (
 	Id int NOT NULL auto_increment,
-	Name nvarchar(100) NOT NULL,
+	Name nvarchar(100) NOT NULL UNIQUE,
 	StateId int NULL,
 	primary key (Id),
 	FOREIGN KEY (StateId) REFERENCES EnumState(Id)
@@ -103,7 +94,7 @@ CREATE TABLE fun.EnumPlayerPosition (
 
 CREATE TABLE fun.Player (
 	Id int NOT NULL auto_increment,
-	Name nvarchar(50) NOT NULL,
+	Name nvarchar(100) NOT NULL UNIQUE,
 	Number int NULL,
 	DateOfBirth date NULL,
 	TeamId int NOT NULL,

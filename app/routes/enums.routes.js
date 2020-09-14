@@ -11,8 +11,9 @@ module.exports = (app) => {
 	router.get("/seasons", enums.enumSeasons);
 	router.get("/competitions", enums.enumCompetitions);
 	router.get("/players", enums.enumPlayers);
-
-	// router.post("/:type", enums.insertOrUpdate);
+	router.get("/states", enums.enumStates);
+	router.post("/:type", enums.insert);
+	router.put("/:type/:id", enums.update);
 
 	app.use("/api/enums", router);
 };
