@@ -1,18 +1,16 @@
 const { query } = require("../models/db");
 
 exports.listByPlayer = (req, res) => {
-	
-	let args = `${ req.params.id }, ${ req.body.season == null ? 'null' : req.body.season }`;
-	query(`call fun.ListPlayerStatsByPlayerId(${ args })`)
-		.catch((err) => {
-			res.send(err);
-		})
+	let args = `${req.params.id}, ${
+		req.body.season == null ? "null" : req.body.season
+	}`;
+	query(`call fun.ListPlayerStatsByPlayerId(${args})`)
 		.then((queryResult) => {
 			let result = [];
 			queryResult[0].forEach(function (row) {
-				result.push({ 
-					id: row.Id, 
-					playerId: row.PlayerId, 
+				result.push({
+					id: row.Id,
+					playerId: row.PlayerId,
 					matchId: row.MatchId,
 					goals: row.Goals,
 					assists: row.Assists,
@@ -23,5 +21,8 @@ exports.listByPlayer = (req, res) => {
 				});
 			});
 			res.json(result);
+		})
+		.catch((err) => {
+			res.send(err);
 		});
 };

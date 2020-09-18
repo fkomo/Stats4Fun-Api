@@ -1,15 +1,6 @@
 ﻿-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- DROP STORED PROCEDURES
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-drop procedure fun.ListEnumCompetitions;
-drop procedure fun.ListEnumTeams;
-drop procedure fun.ListEnumPlayerPositions;
-drop procedure fun.ListEnumMatchTypes;
-drop procedure fun.ListEnumMatchResults;
-drop procedure fun.ListEnumPlaces;
-drop procedure fun.ListEnumStates;
-drop procedure fun.ListEnumPlayers;
-drop procedure fun.ListSeasons;
 drop procedure fun.ListMatches;
 drop procedure fun.GetMatch;
 drop procedure fun.InsertMatch;
@@ -21,10 +12,6 @@ drop procedure fun.InsertMatchPlayerStats;
 drop procedure fun.ModifyMatchPlayerStats;
 drop procedure fun.DeleteMatchPlayerStats;
 drop procedure fun.ListPlayerStats;
-drop procedure fun.GetPlayer;
-drop procedure fun.InsertPlayer;
-drop procedure fun.ModifyPlayer;
-drop procedure fun.DeletePlayer;
 drop procedure fun.ListCompetitions;
 drop procedure fun.TopPlayerGoals;
 drop procedure fun.TopPlayerAssists;
@@ -36,7 +23,17 @@ drop procedure fun.TopTeamGoalsTaken;
 drop procedure fun.TopTeamScore;
 drop procedure fun.BottomTeamScore;
 drop procedure fun.AllSeasonsStats;
-drop procedure fun.FixMatchWinLossTie; 
+
+
+drop procedure fun.ListEnumCompetitions;
+drop procedure fun.ListEnumTeams;
+drop procedure fun.ListEnumPlayerPositions;
+drop procedure fun.ListEnumMatchTypes;
+drop procedure fun.ListEnumMatchResults;
+drop procedure fun.ListEnumPlaces;
+drop procedure fun.ListEnumStates;
+drop procedure fun.ListEnumPlayers;
+drop procedure fun.ListSeasons;
 
 drop procedure fun.InsertTeam;
 drop procedure fun.ModifyTeam;
@@ -54,6 +51,16 @@ drop procedure fun.ModifyMatchResult;
 
 drop procedure fun.ListMatchesByPlayerId;
 drop procedure fun.ListPlayerStatsByPlayerId;
+
+drop procedure fun.FixMatchWinLossTie; 
+
+drop procedure fun.GetPlayer;
+drop procedure fun.InsertPlayer;
+drop procedure fun.ModifyPlayer;
+drop procedure fun.DeletePlayer;
+
+drop procedure fun.ListPlayerSeasons;
+
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- CREATE STORED PROCEDURES
@@ -679,7 +686,8 @@ select
 from
 	Player
 where
-	Id = playerId;
+	Id = playerId
+	and (StateId is null or StateId <> 1);
 
 END $ $
 
@@ -707,18 +715,18 @@ values
 		playerPositionId
 	);
 
-select
-	LAST_INSERT_ID() as Id;
+call fun.GetPlayer(LAST_INSERT_ID());
 
 END $ $
 
 CREATE PROCEDURE fun.ModifyPlayer (
+	in playerId int,
 	in dateofBirth datetime,
 	in name nvarchar(100),
 	in number int,
 	in playerPositionId int,
 	in teamId int,
-	in playerId int
+	in stateId int
 ) BEGIN
 update
 	Player
@@ -727,12 +735,12 @@ set
 	TeamId = teamId,
 	Name = name,
 	Number = number,
-	PlayerPositionId = playerPositionId
+	PlayerPositionId = playerPositionId,
+	StateId = stateId
 where
 	Id = playerId;
 
-select
-	playerId as Id;
+call fun.GetPlayer(playerId);
 
 END $ $
 
@@ -1543,5 +1551,24 @@ order by
 
 END $ $
 
+CREATE PROCEDURE fun.ListPlayerSeasons(
+	in playerId int
+) BEGIN
+select
+	distinct YEAR(m.DateTime) Season
+from
+	fun.Match as m
+	inner join fun.PlayerStats as ps on ps.MatchId = m.Id
+where
+	ps.PlayerId = playerId
+	and ps.StateId is null
+	and m.StateId is null
+	and MONTH(m.DateTime) > 8
+group by
+	Season
+order by
+	Season desc;
+
+END $ $
 
 DELIMITER ;

@@ -10,89 +10,89 @@ function createEnumArray(rows) {
 
 exports.enumTeams = (req, res) => {
 	query("call fun.ListEnumTeams()")
-		.catch((err) => {
-			res.send(err);
-		})
 		.then((queryResult) => {
 			res.json(createEnumArray(queryResult[0]));
+		})
+		.catch((err) => {
+			res.send(err);
 		});
 };
 
 exports.enumPlaces = (req, res) => {
 	query("call fun.ListEnumPlaces()")
-		.catch((err) => {
-			res.send(err);
-		})
 		.then((queryResult) => {
 			res.json(createEnumArray(queryResult[0]));
+		})
+		.catch((err) => {
+			res.send(err);
 		});
 };
 
 exports.enumPlayerPositions = (req, res) => {
 	query("call fun.ListEnumPlayerPositions()")
-		.catch((err) => {
-			res.send(err);
-		})
 		.then((queryResult) => {
 			res.json(createEnumArray(queryResult[0]));
+		})
+		.catch((err) => {
+			res.send(err);
 		});
 };
 
 exports.enumMatchTypes = (req, res) => {
 	query("call fun.ListEnumMatchTypes()")
+		.then((queryResult) => {
+			res.json(createEnumArray(queryResult[0]));
+		})
 		.catch((err) => {
 			res.send(err);
 		})
-		.then((queryResult) => {
-			res.json(createEnumArray(queryResult[0]));
+		.catch((err) => {
+			res.send(err);
 		});
 };
 
 exports.enumMatchResults = (req, res) => {
 	query("call fun.ListEnumMatchResults()")
-		.catch((err) => {
-			res.send(err);
-		})
 		.then((queryResult) => {
 			res.json(createEnumArray(queryResult[0]));
+		})
+		.catch((err) => {
+			res.send(err);
 		});
 };
 
 exports.enumCompetitions = (req, res) => {
 	query("call fun.ListEnumCompetitions()")
-		.catch((err) => {
-			res.send(err);
-		})
 		.then((queryResult) => {
 			res.json(createEnumArray(queryResult[0]));
+		})
+		.catch((err) => {
+			res.send(err);
 		});
 };
 
 exports.enumPlayerNames = (req, res) => {
 	query("call fun.ListEnumPlayers(0)")
-		.catch((err) => {
-			res.send(err);
-		})
 		.then((queryResult) => {
 			res.json(createEnumArray(queryResult[0]));
+		})
+		.catch((err) => {
+			res.send(err);
 		});
 };
 
 exports.enumStates = (req, res) => {
 	query("call fun.ListEnumStates()")
-		.catch((err) => {
-			res.send(err);
-		})
 		.then((queryResult) => {
 			res.json(createEnumArray(queryResult[0]));
+		})
+		.catch((err) => {
+			res.send(err);
 		});
 };
 
 exports.enumSeasons = (req, res) => {
 	query("call fun.ListSeasons()")
-		.catch((err) => {
-			res.send(err);
-		})
 		.then((queryResult) => {
 			let result = [];
 			queryResult[0].forEach(function (row) {
@@ -102,6 +102,26 @@ exports.enumSeasons = (req, res) => {
 				});
 			});
 			res.json(result);
+		})
+		.catch((err) => {
+			res.send(err);
+		});
+};
+
+exports.listSeasonsByPlayer = (req, res) => {
+	query(`call fun.ListPlayerSeasons(${req.params.id})`)
+		.then((queryResult) => {
+			let result = [];
+			queryResult[0].forEach(function (row) {
+				result.push({
+					id: row.Season,
+					name: row.Season + "/" + (parseInt(row.Season) + 1),
+				});
+			});
+			res.json(result);
+		})
+		.catch((err) => {
+			res.send(err);
 		});
 };
 
@@ -136,7 +156,7 @@ const modifyEnumTypes = [
 	"matchtype",
 	"playerposition",
 	"state",
-	"matchresult"
+	"matchresult",
 ];
 
 exports.update = (req, res) => {

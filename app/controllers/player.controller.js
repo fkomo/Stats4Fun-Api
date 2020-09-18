@@ -1,28 +1,25 @@
 const { query } = require("../models/db");
 
 exports.stats = (req, res) => {
-	
-	let seasonId = req.body.seasonId == null ? 'null' : req.body.seasonId;
-	let teamId = req.body.teamId == null ? 'null' : req.body.teamId;
-	let matchTypeId = req.body.matchTypeId == null ? 'null' : req.body.matchTypeId;
-	let placeId = req.body.placeId == null ? 'null' : req.body.placeId;
-	let playerPositionId = req.body.playerPositionId == null ? 'null' : req.body.playerPositionId;
-	let competitionId = req.body.competitionId == null ? 'null' : req.body.competitionId;
-	let playerId = req.body.playerId == null ? 'null' : req.body.playerId;
-
-	let args = `${ seasonId }, ${ teamId }, ${ matchTypeId }, ${ placeId }, ${ playerPositionId }, ${ competitionId }, ${ playerId }`;
-	
-	query(`call fun.ListPlayerStats(${ args })`)
-		.catch((err) => {
-			res.send(err);
-		})
+	let seasonId = req.body.seasonId == null ? "null" : req.body.seasonId;
+	let teamId = req.body.teamId == null ? "null" : req.body.teamId;
+	let matchTypeId =
+		req.body.matchTypeId == null ? "null" : req.body.matchTypeId;
+	let placeId = req.body.placeId == null ? "null" : req.body.placeId;
+	let playerPositionId =
+		req.body.playerPositionId == null ? "null" : req.body.playerPositionId;
+	let competitionId =
+		req.body.competitionId == null ? "null" : req.body.competitionId;
+	let playerId = req.body.playerId == null ? "null" : req.body.playerId;
+	let args = `${seasonId}, ${teamId}, ${matchTypeId}, ${placeId}, ${playerPositionId}, ${competitionId}, ${playerId}`;
+	query(`call fun.ListPlayerStats(${args})`)
 		.then((queryResult) => {
 			let result = [];
 			queryResult[0].forEach(function (row) {
-				result.push({ 
-					id: row.PlayerId, 
+				result.push({
+					id: row.PlayerId,
 					number: row.PlayerNumber,
-					name: row.Name, 
+					name: row.Name,
 					gamesPlayed: row.GamesPlayed,
 					goals: row.Goals,
 					assists: row.Assists,
@@ -32,32 +29,74 @@ exports.stats = (req, res) => {
 					redCards: row.RedCards,
 					playerPositionId: row.PlayerPositionId,
 					teamId: row.TeamId,
-					retired: row.PlayerStateId == '2',
+					retired: row.PlayerStateId == "2",
 					wins: row.WinCount,
 					losses: row.LossCount,
 					ties: row.TieCount,
 				});
 			});
 			res.json(result);
+		})
+		.catch((err) => {
+			res.send(err);
 		});
 };
 
+function getPlayer(row) {
+	return {
+		id: row.Id,
+		name: row.Name,
+		number: row.Number,
+		dateOfBirth: row.DateOfBirth == null ? null : new Date(row.DateOfBirth).toISOString().slice(0, 10),
+		playerPositionId: row.PlayerPositionId,
+		teamId: row.TeamId,
+		retired: row.StateId == "2",
+	};
+}
+
 exports.get = (req, res) => {
-		
-	query(`call fun.GetPlayer(${ req.params.id })`)
+	query(`call fun.GetPlayer(${req.params.id})`)
+		.then((queryResult) => {
+			res.json(getPlayer(queryResult[0][0]));
+		})
 		.catch((err) => {
 			res.send(err);
-		})
+		});
+};
+
+exports.insert = (req, res) => {
+	let p = req.body;
+	let args = `'${p.dateOfBirth}', '${p.name}', ${p.number}, ${p.playerPositionId}, ${p.teamId}`;
+	query(`call fun.InsertPlayer(${args})`)
 		.then((queryResult) => {
-			var row = queryResult[0][0];
-			res.json({ 
-				id: row.Id, 
-				name: row.Name, 
-				number: row.Number,
-				dateOfBirth: row.DateOfBirth,
-				playerPositionId: row.PlayerPositionId,
-				teamId: row.TeamId,
-				retired: row.StateId == '2',
+			res.json(getPlayer(queryResult[0][0]));
+		})
+		.catch((err) => {
+			res.send(err);
+		});
+};
+
+exports.update = (req, res) => {
+	let p = req.body;
+	let stateId = p.retired == true ? 2 : null;
+	let args = `${p.id}, '${p.dateOfBirth}', '${p.name}', ${p.number}, ${p.playerPositionId}, ${p.teamId}, ${stateId}`;
+	query(`call fun.ModifyPlayer(${args})`)
+		.then((queryResult) => {
+			res.json(getPlayer(queryResult[0][0]));
+		})
+		.catch((err) => {
+			res.send(err);
+		});
+};
+
+exports.delete = (req, res) => {
+	query(`call fun.DeletePlayer(${req.params.id})`)
+		.then((queryResult) => {
+			res.json({
+				result: "ok",
 			});
+		})
+		.catch((err) => {
+			res.send(err);
 		});
 };

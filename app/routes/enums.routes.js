@@ -9,6 +9,7 @@ module.exports = (app) => {
 	router.get("/matchTypes", controller.enumMatchTypes);
 	router.get("/matchResults", controller.enumMatchResults);
 	router.get("/seasons", controller.enumSeasons);
+	router.get("/seasons/player/:id", controller.listSeasonsByPlayer);
 	router.get("/competitions", controller.enumCompetitions);
 	router.get("/playernames", controller.enumPlayerNames);
 	router.get("/states", controller.enumStates);
