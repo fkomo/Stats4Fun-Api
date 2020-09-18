@@ -68,7 +68,7 @@ exports.enumCompetitions = (req, res) => {
 		});
 };
 
-exports.enumPlayers = (req, res) => {
+exports.enumPlayerNames = (req, res) => {
 	query("call fun.ListEnumPlayers(0)")
 		.catch((err) => {
 			res.send(err);

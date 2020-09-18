@@ -18,10 +18,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // simple route
 app.get("/", (req, res) => {
-	res.json({ message: "4FunFutsalTeam-Api" });
+	res.json({ "api-list": [ 
+		{ url: "/api/enums/teams", description: "" },
+		{ url: "/api/enums/places", description: "" },
+		{ url: "/api/enums/playerPositions", description: "" },
+		{ url: "/api/enums/matchTypes", description: "" },
+		{ url: "/api/enums/matchResults", description: "" },
+		{ url: "/api/enums/seasons", description: "" },
+		{ url: "/api/enums/competitions", description: "" },
+		{ url: "/api/enums/playerNames", description: "" },
+		{ url: "/api/enums/:enumName", description: "" },
+		{ url: "/api/enums/:enumName/:id", description: "" },
+
+	]});
 });
 
 require("./app/routes/enums.routes")(app);
+require("./app/routes/matches.routes")(app);
+require("./app/routes/players.routes")(app);
+require("./app/routes/stats.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8042;

@@ -52,6 +52,9 @@ drop procedure fun.InsertState;
 drop procedure fun.ModifyState;
 drop procedure fun.ModifyMatchResult;
 
+drop procedure fun.ListMatchesByPlayerId;
+drop procedure fun.ListPlayerStatsByPlayerId;
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- CREATE STORED PROCEDURES
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -477,9 +480,9 @@ CREATE PROCEDURE fun.ListPlayerStats (
 	in playerId int
 ) BEGIN
 select
-	AVG(Player.Id),
-	AVG(Player.Number),
-	Player.Name,
+	AVG(Player.Id) as PlayerId,
+	AVG(Player.Number) as PlayerNumber,
+	Player.Name as Name,
 	COUNT(*) as GamesPlayed,
 	SUM(Goals) as Goals,
 	SUM(Assists) as Assists,
@@ -1466,5 +1469,79 @@ select
 	Id;
 
 END $ $
+
+CREATE PROCEDURE fun.ListMatchesByPlayerId (
+	in playerId int,
+	in season int
+) BEGIN
+select
+	m.Id,
+	m.DateTime,
+	m.MatchTypeId,
+	m.PlaceId,
+	m.CompetitionId,
+	m.HomeTeamId,
+	m.AwayTeamId,
+	m.HomeTeamScore,
+	m.AwayTeamScore
+from
+	fun.PlayerStats as ps
+	inner join fun.Match as m on m.Id = ps.MatchId
+where
+	(ps.StateId is null)
+	and (m.StateId is null)
+	and (ps.PlayerId = playerId)
+	and (
+		season is null
+		or (
+			MONTH(m.DateTime) < 8
+			and (YEAR(m.DateTime) - 1) = season
+		)
+		or (
+			MONTH(m.DateTime) > 8
+			and (YEAR(m.DateTime) = season)
+		)
+	)
+order by
+	m.DateTime desc;
+
+END $ $
+
+CREATE PROCEDURE fun.ListPlayerStatsByPlayerId (
+	in playerId int,
+	in season int
+) BEGIN
+select
+	ps.Id,
+	ps.PlayerId,
+	m.Id as MatchId,
+	ps.Goals,
+	ps.Assists,
+	ps.PosNegPoints,
+	ps.YellowCards,
+	ps.RedCards
+from
+	fun.PlayerStats as ps
+	inner join fun.Match as m on m.Id = ps.MatchId
+where
+	(ps.StateId is null)
+	and (m.StateId is null)
+	and (ps.PlayerId = playerId)
+	and (
+		season is null
+		or (
+			MONTH(m.DateTime) < 8
+			and (YEAR(m.DateTime) - 1) = season
+		)
+		or (
+			MONTH(m.DateTime) > 8
+			and (YEAR(m.DateTime) = season)
+		)
+	)
+order by
+	m.DateTime desc;
+
+END $ $
+
 
 DELIMITER ;
