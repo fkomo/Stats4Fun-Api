@@ -9,7 +9,7 @@ exports.listByPlayer = (req, res) => {
 			let result = [];
 			queryResult[0].forEach(function (row) {
 				result.push({
-					id: row.Id,
+					playerStatsId: row.PlayerStatsId,
 					playerId: row.PlayerId,
 					matchId: row.MatchId,
 					goals: row.Goals,

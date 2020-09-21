@@ -1,17 +1,6 @@
 ﻿-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- DROP STORED PROCEDURES
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-drop procedure fun.ListMatches;
-drop procedure fun.GetMatch;
-drop procedure fun.InsertMatch;
-drop procedure fun.ModifyMatch;
-drop procedure fun.DeleteMatch;
-drop procedure fun.MatchesStats;
-drop procedure fun.ListMatchPlayerStats;
-drop procedure fun.InsertMatchPlayerStats;
-drop procedure fun.ModifyMatchPlayerStats;
-drop procedure fun.DeleteMatchPlayerStats;
-drop procedure fun.ListPlayerStats;
 drop procedure fun.ListCompetitions;
 drop procedure fun.TopPlayerGoals;
 drop procedure fun.TopPlayerAssists;
@@ -24,7 +13,6 @@ drop procedure fun.TopTeamScore;
 drop procedure fun.BottomTeamScore;
 drop procedure fun.AllSeasonsStats;
 
-
 drop procedure fun.ListEnumCompetitions;
 drop procedure fun.ListEnumTeams;
 drop procedure fun.ListEnumPlayerPositions;
@@ -34,7 +22,6 @@ drop procedure fun.ListEnumPlaces;
 drop procedure fun.ListEnumStates;
 drop procedure fun.ListEnumPlayers;
 drop procedure fun.ListSeasons;
-
 drop procedure fun.InsertTeam;
 drop procedure fun.ModifyTeam;
 drop procedure fun.InsertCompetition;
@@ -48,18 +35,25 @@ drop procedure fun.ModifyPlayerPosition;
 drop procedure fun.InsertState;
 drop procedure fun.ModifyState;
 drop procedure fun.ModifyMatchResult;
-
 drop procedure fun.ListMatchesByPlayerId;
 drop procedure fun.ListPlayerStatsByPlayerId;
-
 drop procedure fun.FixMatchWinLossTie; 
-
 drop procedure fun.GetPlayer;
 drop procedure fun.InsertPlayer;
 drop procedure fun.ModifyPlayer;
 drop procedure fun.DeletePlayer;
-
 drop procedure fun.ListPlayerSeasons;
+drop procedure fun.ListMatches;
+drop procedure fun.ListMutualMatches;
+drop procedure fun.GetMatch;
+drop procedure fun.InsertMatch;
+drop procedure fun.ModifyMatch;
+drop procedure fun.DeleteMatch;
+drop procedure fun.ListPlayerStats;
+drop procedure fun.ListMatchPlayerStats;
+
+drop procedure fun.InsertPlayerStats;
+drop procedure fun.DeletePlayerStats;
 
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -169,122 +163,19 @@ where
 
 END $ $
 
-CREATE PROCEDURE fun.ListMatches (
-	in season int,
-	in teamId int,
-	in matchTypeId int,
-	in competitionId int,
-	in placeId int,
-	in resultId int
-) BEGIN
-select
-	m.Id,
-	m.DateTime,
-	matchType.Name,
-	place.Name,
-	competition.Name,
-	homeTeam.Name,
-	awayTeam.Name,
-	m.HomeTeamScore,
-	m.AwayTeamScore
-from
-	fun.Match as m
-	inner join fun.EnumTeam as homeTeam on homeTeam.Id = m.HomeTeamId
-	inner join fun.EnumTeam as awayTeam on awayTeam.Id = m.AwayTeamId
-	inner join fun.EnumMatchType as matchType on matchType.Id = m.MatchTypeId
-	inner join fun.EnumPlace as place on place.Id = m.PlaceId
-	left join fun.EnumCompetition as competition on competition.Id = m.CompetitionId
-where
-	(m.StateId is null)
-	and (homeTeam.StateId is null)
-	and (awayTeam.StateId is null)
-	and (matchType.StateId is null)
-	and (place.StateId is null)
-	and (competition.StateId is null)
-	and (
-		teamId is null
-		or teamId = m.HomeTeamId
-		or teamId = m.AwayTeamId
-	)
-	and (
-		competitionId is null
-		or competitionId = m.CompetitionId
-	)
-	and (
-		placeId is null
-		or placeId = m.PlaceId
-	)
-	and (
-		matchTypeId is null
-		or matchTypeId = m.MatchTypeId
-	)
-	and (
-		season is null
-		or (
-			MONTH(m.DateTime) < 8
-			and (YEAR(m.DateTime) - 1) = season
-		)
-		or (
-			MONTH(m.DateTime) > 8
-			and (YEAR(m.DateTime) = season)
-		)
-	)
-	and (
-		resultId is null
-		or (
-			resultId = 0
-			and HomeTeamScore = AwayTeamScore
-		)
-		or (
-			resultId = 1
-			and (
-				(
-					homeTeam.Name like '4Fun%'
-					and HomeTeamScore > AwayTeamScore
-				)
-				or (
-					awayTeam.Name like '4Fun%'
-					and AwayTeamScore > HomeTeamScore
-				)
-			)
-		)
-		or (
-			resultId = -1
-			and (
-				(
-					homeTeam.Name like '4Fun%'
-					and HomeTeamScore < AwayTeamScore
-				)
-				or (
-					awayTeam.Name like '4Fun%'
-					and AwayTeamScore < HomeTeamScore
-				)
-			)
-		)
-	)
-order by
-	m.DateTime desc;
-
-END $ $
-
 CREATE PROCEDURE fun.GetMatch (in matchId int) BEGIN
 select
 	m.Id,
 	m.DateTime,
-	EnumMatchType.Name as MatchType,
-	EnumPlace.Name as Place,
-	EnumCompetition.Name as Competition,
-	homeTeam.Name as HomeTeam,
-	awayTeam.Name as AwayTeam,
+	m.MatchTypeId,
+	m.PlaceId,
+	m.CompetitionId,
+	m.HomeTeamId,
+	m.AwayTeamId,
 	m.HomeTeamScore,
 	m.AwayTeamScore
 from
 	fun.Match m
-	inner join EnumPlace on EnumPlace.Id = m.PlaceId
-	inner join EnumMatchType on EnumMatchType.Id = m.MatchTypeId
-	inner join EnumTeam as homeTeam on homeTeam.Id = m.HomeTeamId
-	inner join EnumTeam as awayTeam on awayTeam.Id = m.AwayTeamId
-	inner join EnumCompetition on EnumCompetition.Id = m.CompetitionId
 where
 	(m.StateId is null)
 	and m.Id = matchId;
@@ -299,10 +190,7 @@ CREATE PROCEDURE fun.InsertMatch (
 	in homeTeamId int,
 	in awayTeamId int,
 	in homeTeamScore int,
-	in awayTeamScore int,
-	in win int,
-	in loss int,
-	in tie int
+	in awayTeamScore int
 ) BEGIN
 insert into
 	fun.Match (
@@ -313,10 +201,7 @@ insert into
 		AwayTeamScore,
 		MatchTypeId,
 		PlaceId,
-		CompetitionId,
-		Win,
-		Loss,
-		Tie
+		CompetitionId
 	)
 values
 	(
@@ -327,14 +212,11 @@ values
 		awayTeamScore,
 		matchTypeId,
 		placeId,
-		competitionId,
-		win,
-		loss,
-		tie
+		competitionId
 	);
 
-select
-	LAST_INSERT_ID() as Id;
+call fun.FixMatchWinLossTie();
+call fun.GetMatch(LAST_INSERT_ID());
 
 END $ $
 
@@ -347,10 +229,7 @@ CREATE PROCEDURE fun.ModifyMatch (
 	in homeTeamId int,
 	in awayTeamId int,
 	in homeTeamScore int,
-	in awayTeamScore int,
-	in win int,
-	in loss int,
-	in tie int
+	in awayTeamScore int
 ) BEGIN
 update
 	fun.Match
@@ -362,25 +241,16 @@ set
 	AwayTeamScore = awayTeamScore,
 	MatchTypeId = matchTypeId,
 	PlaceId = placeId,
-	CompetitionId = competitionId,
-	Win = win,
-	Loss = loss,
-	Tie = tie
+	CompetitionId = competitionId
 where
 	Id = matchId;
 
-select
-	matchId as Id;
+call fun.FixMatchWinLossTie();
+call fun.GetMatch(matchId);
 
 END $ $
 
 CREATE PROCEDURE fun.DeleteMatch (in matchId int) BEGIN
-update
-	PlayerStats
-set
-	StateId = 1
-where
-	Id = matchId;
 
 update
 	fun.Match
@@ -389,288 +259,7 @@ set
 where
 	Id = matchId;
 
-END $ $
-
-CREATE PROCEDURE fun.MatchesStats (
-	in season int,
-	in teamId int,
-	in matchTypeId int,
-	in competitionId int,
-	in placeId int,
-	in resultId int
-) BEGIN
-select
-	COUNT(*) as GamesPlayed,
-	SUM(Win) as Wins,
-	SUM(Loss) as Losses,
-	SUM(Tie) as Ties,
-	SUM(Win) * 3 + SUM(Tie) as Points
-from
-	fun.Match m
-	inner join EnumTeam as homeTeam on homeTeam.Id = m.HomeTeamId
-	inner join EnumTeam as awayTeam on awayTeam.Id = m.AwayTeamId
-where
-	(m.StateId is null)
-	and (homeTeam.StateId is null)
-	and (awayTeam.StateId is null)
-	and (
-		teamId is null
-		or teamId = m.HomeTeamId
-		or teamId = m.AwayTeamId
-	)
-	and (
-		competitionId is null
-		or competitionId = m.CompetitionId
-	)
-	and (
-		placeId is null
-		or placeId = m.PlaceId
-	)
-	and (
-		matchTypeId is null
-		or matchTypeId = m.MatchTypeId
-	)
-	and (
-		season is null
-		or (
-			MONTH(m.DateTime) < 8
-			and (YEAR(m.DateTime) - 1) = season
-		)
-		or (
-			MONTH(m.DateTime) > 8
-			and (YEAR(m.DateTime) = season)
-		)
-	)
-	and (
-		resultId is null
-		or (
-			resultId = 0
-			and HomeTeamScore = AwayTeamScore
-		)
-		or (
-			resultId = 1
-			and (
-				(
-					homeTeam.Name like '4Fun%'
-					and HomeTeamScore > AwayTeamScore
-				)
-				or (
-					awayTeam.Name like '4Fun%'
-					and AwayTeamScore > HomeTeamScore
-				)
-			)
-		)
-		or (
-			resultId = -1
-			and (
-				(
-					homeTeam.Name like '4Fun%'
-					and HomeTeamScore < AwayTeamScore
-				)
-				or (
-					awayTeam.Name like '4Fun%'
-					and AwayTeamScore < HomeTeamScore
-				)
-			)
-		)
-	);
-
-END $ $
-
-CREATE PROCEDURE fun.ListPlayerStats (
-	in season int,
-	in teamId int,
-	in matchTypeId int,
-	in placeId int,
-	in playerPositionId int,
-	in competitionId int,
-	in playerId int
-) BEGIN
-select
-	AVG(Player.Id) as PlayerId,
-	AVG(Player.Number) as PlayerNumber,
-	Player.Name as Name,
-	COUNT(*) as GamesPlayed,
-	SUM(Goals) as Goals,
-	SUM(Assists) as Assists,
-	SUM(PosNegPoints) as PosNegPoints,
-	SUM(Goals) + SUM(Assists) as Points,
-	SUM(YellowCards) as YellowCards,
-	SUM(RedCards) as RedCards,
-	AVG(EnumPlayerPosition.Id) as PlayerPositionId,
-	AVG(Team.Id) as TeamId,
-	AVG(PlayerState.Id) as PlayerStateId,
-	SUM(m.Win) as WinCount,
-	SUM(m.Loss) as LossCount,
-	SUM(m.Tie) as TieCount
-from
-	PlayerStats
-	inner join Player on Player.Id = PlayerStats.PlayerId
-	inner join fun.Match as m on m.Id = PlayerStats.MatchId
-	inner join EnumTeam Team on Team.Id = Player.TeamId
-	inner join EnumTeam HomeTeam on HomeTeam.Id = m.HomeTeamId
-	inner join EnumTeam AwayTeam on AwayTeam.Id = m.AwayTeamId
-	inner join EnumPlayerPosition on EnumPlayerPosition.Id = Player.PlayerPositionId
-	inner join EnumPlace on EnumPlace.Id = m.PlaceId
-	left join EnumCompetition on EnumCompetition.Id = m.CompetitionId
-	left join EnumState PlayerState on PlayerState.Id = Player.StateId
-where
-	(PlayerStats.StateId is null)
-	and (
-		Player.StateId is null
-		or Player.StateId <> 1
-	)
-	and (m.StateId is null)
-	and (Team.StateId is null)
-	and (HomeTeam.StateId is null)
-	and (AwayTeam.StateId is null)
-	and (EnumPlayerPosition.StateId is null)
-	and (EnumPlace.StateId is null)
-	and (EnumCompetition.StateId is null)
-	and (
-		playerId is null
-		or Player.Id = playerId
-	)
-	and (
-		teamId is null
-		or (
-			Team.Id = teamId
-			or HomeTeam.Id = teamId
-			or AwayTeam.Id = teamId
-		)
-	)
-	and (
-		season is null
-		or (
-			MONTH(m.DateTime) < 8
-			and (YEAR(m.DateTime) - 1) = season
-		)
-		or (
-			MONTH(m.DateTime) > 8
-			and (YEAR(m.DateTime) = season)
-		)
-	)
-	and (
-		placeId is null
-		or m.PlaceId = placeId
-	)
-	and (
-		matchTypeId is null
-		or m.MatchTypeId = matchTypeId
-	)
-	and (
-		playerPositionId is null
-		or Player.PlayerPositionId = playerPositionId
-	)
-	and (
-		competitionId is null
-		or m.CompetitionId = competitionId
-	)
-group by
-	Player.Name
-order by
-	Points desc;
-END $ $
-
-CREATE PROCEDURE fun.ListMatchPlayerStats (in matchId int) BEGIN
-select
-	Player.Id as PlayerId,
-	PlayerStats.Id as PlayerStatsId,
-	Player.Number,
-	Player.Name,
-	PlayerStats.Goals,
-	PlayerStats.Assists,
-	PlayerStats.PosNegPoints,
-	PlayerStats.Goals + PlayerStats.Assists + PlayerStats.PosNegPoints as Points,
-	PlayerStats.YellowCards,
-	PlayerStats.RedCards,
-	EnumPlayerPosition.Name as PlayerPosition,
-	EnumTeam.Name as Team
-from
-	PlayerStats
-	inner join fun.Match as m on m.Id = PlayerStats.MatchId
-	inner join Player on Player.Id = PlayerStats.PlayerId
-	inner join EnumPlayerPosition on EnumPlayerPosition.Id = Player.PlayerPositionId
-	inner join EnumTeam on EnumTeam.Id = Player.TeamId
-where
-	(PlayerStats.StateId is null)
-	and (m.StateId is null)
-	and m.Id = matchId
-order by
-	Points desc;
-
-END $ $
-
-CREATE PROCEDURE fun.InsertMatchPlayerStats (
-	in playerId int,
-	in matchId int,
-	in goals int,
-	in assists int,
-	in posNegPoints int,
-	in yellowCards int,
-	in redCards int
-) BEGIN
-insert into
-	PlayerStats (
-		Goals,
-		Assists,
-		PosNegPoints,
-		YellowCards,
-		RedCards,
-		MatchId,
-		PlayerId
-	)
-values
-	(
-		goals,
-		assists,
-		posNegPoints,
-		yellowCards,
-		redCards,
-		matchId,
-		playerId
-	);
-
-select
-	LAST_INSERT_ID() as Id;
-
-END $ $
-
-CREATE PROCEDURE fun.ModifyMatchPlayerStats (
-	in playerStatsId int,
-	in playerId int,
-	in matchId int,
-	in goals int,
-	in assists int,
-	in posNegPoints int,
-	in yellowCards int,
-	in redCards int
-) BEGIN
-update
-	PlayerStats
-set
-	Goals = goals,
-	Assists = assists,
-	PosNegPoints = posNegPoints,
-	YellowCards = yellowCards,
-	RedCards = redCards,
-	MatchId = matchId,
-	PlayerId = playerId
-where
-	Id = playerStatsId;
-
-select
-	playerStatsId as Id;
-
-END $ $
-
-CREATE PROCEDURE fun.DeleteMatchPlayerStats (in playerStatsId int) BEGIN
-update
-	PlayerStats
-set
-	StateId = 1
-where
-	PlayerStats.Id = playerStatsId;
+call fun.DeletePlayerStats(matchId);
 
 END $ $
 
@@ -1491,7 +1080,10 @@ select
 	m.HomeTeamId,
 	m.AwayTeamId,
 	m.HomeTeamScore,
-	m.AwayTeamScore
+	m.AwayTeamScore,
+	m.Win,
+	m.Loss,
+	m.Tie
 from
 	fun.PlayerStats as ps
 	inner join fun.Match as m on m.Id = ps.MatchId
@@ -1520,7 +1112,7 @@ CREATE PROCEDURE fun.ListPlayerStatsByPlayerId (
 	in season int
 ) BEGIN
 select
-	ps.Id,
+	ps.Id as PlayerStatsId,
 	ps.PlayerId,
 	m.Id as MatchId,
 	ps.Goals,
@@ -1568,6 +1160,325 @@ group by
 	Season
 order by
 	Season desc;
+
+END $ $
+
+CREATE PROCEDURE fun.ListMatches (
+	in season int,
+	in teamId int,
+	in matchTypeId int,
+	in competitionId int,
+	in placeId int,
+	in resultId int
+) BEGIN
+select
+	m.Id,
+	m.DateTime,
+	m.MatchtypeId,
+	m.PlaceId,
+	m.CompetitionId,
+	m.HomeTeamId,
+	m.AwayTeamId,
+	m.HomeTeamScore,
+	m.AwayTeamScore,
+	m.Win,
+	m.Loss,
+	m.Tie
+from
+	fun.Match as m
+	inner join fun.EnumTeam as homeTeam on homeTeam.Id = m.HomeTeamId
+	inner join fun.EnumTeam as awayTeam on awayTeam.Id = m.AwayTeamId
+where
+	(m.StateId is null)
+	and (homeTeam.StateId is null)
+	and (awayTeam.StateId is null)
+	and (
+		teamId is null
+		or teamId = m.HomeTeamId
+		or teamId = m.AwayTeamId
+	)
+	and (
+		competitionId is null
+		or competitionId = m.CompetitionId
+	)
+	and (
+		placeId is null
+		or placeId = m.PlaceId
+	)
+	and (
+		matchTypeId is null
+		or matchTypeId = m.MatchTypeId
+	)
+	and (
+		season is null
+		or (
+			MONTH(m.DateTime) < 8
+			and (YEAR(m.DateTime) - 1) = season
+		)
+		or (
+			MONTH(m.DateTime) > 8
+			and (YEAR(m.DateTime) = season)
+		)
+	)
+	and (
+		resultId is null
+		or (
+			resultId = 0
+			and m.HomeTeamScore = m.AwayTeamScore
+		)
+		or (
+			resultId = 1
+			and (
+				(
+					homeTeam.Name like '4Fun%'
+					and m.HomeTeamScore > m.AwayTeamScore
+				)
+				or (
+					awayTeam.Name like '4Fun%'
+					and m.AwayTeamScore > m.HomeTeamScore
+				)
+			)
+		)
+		or (
+			resultId = -1
+			and (
+				(
+					homeTeam.Name like '4Fun%'
+					and m.HomeTeamScore < m.AwayTeamScore
+				)
+				or (
+					awayTeam.Name like '4Fun%'
+					and m.AwayTeamScore < m.HomeTeamScore
+				)
+			)
+		)
+	)
+order by
+	m.DateTime desc;
+
+END $ $
+
+CREATE PROCEDURE fun.ListMutualMatches (
+	in teamId1 int,
+	in 1 int
+) BEGIN
+select
+	m.Id,
+	m.DateTime,
+	m.MatchtypeId,
+	m.PlaceId,
+	m.CompetitionId,
+	m.HomeTeamId,
+	m.AwayTeamId,
+	m.HomeTeamScore,
+	m.AwayTeamScore,
+	m.Win,
+	m.Loss,
+	m.Tie
+from
+	fun.Match as m
+	inner join fun.EnumTeam as homeTeam on homeTeam.Id = m.HomeTeamId
+	inner join fun.EnumTeam as awayTeam on awayTeam.Id = m.AwayTeamId
+where
+	(m.StateId is null)
+	and (homeTeam.StateId is null)
+	and (awayTeam.StateId is null)
+	and (
+		(m.HomeTeamId = teamId1 and m.AwayTeamId = teamId2)
+		or (m.HomeTeamId = teamId2 and m.AwayTeamId = teamId1)
+	)
+order by
+	m.DateTime desc;
+
+END $ $
+
+CREATE PROCEDURE fun.ListPlayerStats (
+	in season int,
+	in teamId int,
+	in matchTypeId int,
+	in placeId int,
+	in playerPositionId int,
+	in competitionId int,
+	in playerId int
+) BEGIN
+select
+	AVG(Player.Id) as PlayerId,
+	AVG(Player.Number) as PlayerNumber,
+	Player.Name as Name,
+	COUNT(*) as GamesPlayed,
+	SUM(Goals) as Goals,
+	SUM(Assists) as Assists,
+	SUM(PosNegPoints) as PosNegPoints,
+	SUM(Goals) + SUM(Assists) as Points,
+	SUM(YellowCards) as YellowCards,
+	SUM(RedCards) as RedCards,
+	AVG(EnumPlayerPosition.Id) as PlayerPositionId,
+	AVG(Team.Id) as TeamId,
+	AVG(PlayerState.Id) as PlayerStateId,
+	SUM(m.Win) as WinCount,
+	SUM(m.Loss) as LossCount,
+	SUM(m.Tie) as TieCount
+from
+	PlayerStats
+	inner join Player on Player.Id = PlayerStats.PlayerId
+	inner join fun.Match as m on m.Id = PlayerStats.MatchId
+	inner join EnumTeam Team on Team.Id = Player.TeamId
+	inner join EnumTeam HomeTeam on HomeTeam.Id = m.HomeTeamId
+	inner join EnumTeam AwayTeam on AwayTeam.Id = m.AwayTeamId
+	inner join EnumPlayerPosition on EnumPlayerPosition.Id = Player.PlayerPositionId
+	inner join EnumPlace on EnumPlace.Id = m.PlaceId
+	left join EnumCompetition on EnumCompetition.Id = m.CompetitionId
+	left join EnumState PlayerState on PlayerState.Id = Player.StateId
+where
+	(PlayerStats.StateId is null)
+	and (
+		Player.StateId is null
+		or Player.StateId <> 1
+	)
+	and (m.StateId is null)
+	and (Team.StateId is null)
+	and (HomeTeam.StateId is null)
+	and (AwayTeam.StateId is null)
+	and (EnumPlayerPosition.StateId is null)
+	and (EnumPlace.StateId is null)
+	and (EnumCompetition.StateId is null)
+	and (
+		playerId is null
+		or Player.Id = playerId
+	)
+	and (
+		teamId is null
+		or (
+			Team.Id = teamId
+			or HomeTeam.Id = teamId
+			or AwayTeam.Id = teamId
+		)
+	)
+	and (
+		season is null
+		or (
+			MONTH(m.DateTime) < 8
+			and (YEAR(m.DateTime) - 1) = season
+		)
+		or (
+			MONTH(m.DateTime) > 8
+			and (YEAR(m.DateTime) = season)
+		)
+	)
+	and (
+		placeId is null
+		or m.PlaceId = placeId
+	)
+	and (
+		matchTypeId is null
+		or m.MatchTypeId = matchTypeId
+	)
+	and (
+		playerPositionId is null
+		or Player.PlayerPositionId = playerPositionId
+	)
+	and (
+		competitionId is null
+		or m.CompetitionId = competitionId
+	)
+group by
+	Player.Name
+order by
+	Points desc;
+	
+END $ $
+
+CREATE PROCEDURE fun.ListMatchPlayerStats (in matchId int) BEGIN
+select
+	Player.Id as PlayerId,
+	PlayerStats.Id as PlayerStatsId,
+	Player.Number as PlayerNumber,
+	Player.Name,
+	Player.PlayerPositionId,
+	Player.TeamId,
+	Player.StateId as PlayerStateId,
+	PlayerStats.Goals,
+	PlayerStats.Assists,
+	PlayerStats.PosNegPoints,
+	(PlayerStats.Goals + PlayerStats.Assists) as Points,
+	PlayerStats.YellowCards,
+	PlayerStats.RedCards,
+	matchId as MatchId
+from
+	PlayerStats
+	inner join fun.Match as m on m.Id = PlayerStats.MatchId
+	inner join Player on Player.Id = PlayerStats.PlayerId
+	inner join EnumPlayerPosition on EnumPlayerPosition.Id = Player.PlayerPositionId
+	inner join EnumTeam on EnumTeam.Id = Player.TeamId
+where
+	(PlayerStats.StateId is null)
+	and (m.StateId is null)
+	and m.Id = matchId
+order by
+	Points desc;
+
+END $ $
+
+CREATE PROCEDURE fun.InsertPlayerStats (
+	in playerId int,
+	in matchId int,
+	in goals int,
+	in assists int,
+	in posNegPoints int,
+	in yellowCards int,
+	in redCards int
+) BEGIN
+insert into
+	PlayerStats (
+		Goals,
+		Assists,
+		PosNegPoints,
+		YellowCards,
+		RedCards,
+		MatchId,
+		PlayerId
+	)
+values
+	(
+		goals,
+		assists,
+		posNegPoints,
+		yellowCards,
+		redCards,
+		matchId,
+		playerId
+	);
+
+select
+	ps.PlayerId as PlayerId,
+	ps.Id as PlayerStatsId,
+	ps.MatchId as MatchId,
+	p.Number as PlayerNumber,
+	p.Name,
+	p.PlayerPositionId,
+	p.TeamId,
+	p.StateId as PlayerStateId,
+	ps.Goals,
+	ps.Assists,
+	ps.PosNegPoints,
+	(ps.Goals + ps.Assists) as Points,
+	ps.YellowCards,
+	ps.RedCards
+from
+	PlayerStats as ps
+    inner join Player as p on p.Id = ps.PlayerId
+where
+	ps.Id = LAST_INSERT_ID();
+
+END $ $
+
+CREATE PROCEDURE fun.DeletePlayerStats (in matchId int) BEGIN
+update
+	fun.PlayerStats
+set
+	StateId = 1
+where
+	PlayerStats.MatchId = matchId;
 
 END $ $
 

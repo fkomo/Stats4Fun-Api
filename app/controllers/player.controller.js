@@ -1,5 +1,30 @@
 const { query } = require("../models/db");
 
+function getPlayerStats(row) {
+	return {
+		playerId: row.PlayerId,
+		number: row.PlayerNumber,
+		name: row.Name,
+		playerPositionId: row.PlayerPositionId,
+		teamId: row.TeamId,
+		retired: row.PlayerStateId == "2",
+
+		gamesPlayed: row.GamesPlayed,
+		goals: row.Goals,
+		assists: row.Assists,
+		posNegPoints: row.PosNegPoints,
+		points: row.Points,
+		yellowCards: row.YellowCards,
+		redCards: row.RedCards,
+
+		playerStatsId: row.PlayerStatsId,
+		matchId: row.MatchId,
+		wins: row.WinCount,
+		losses: row.LossCount,
+		ties: row.TieCount,
+	};
+}
+
 exports.stats = (req, res) => {
 	let seasonId = req.body.seasonId == null ? "null" : req.body.seasonId;
 	let teamId = req.body.teamId == null ? "null" : req.body.teamId;
@@ -16,24 +41,21 @@ exports.stats = (req, res) => {
 		.then((queryResult) => {
 			let result = [];
 			queryResult[0].forEach(function (row) {
-				result.push({
-					id: row.PlayerId,
-					number: row.PlayerNumber,
-					name: row.Name,
-					gamesPlayed: row.GamesPlayed,
-					goals: row.Goals,
-					assists: row.Assists,
-					posNegPoints: row.PosNegPoints,
-					points: row.Points,
-					yellowCards: row.YellowCards,
-					redCards: row.RedCards,
-					playerPositionId: row.PlayerPositionId,
-					teamId: row.TeamId,
-					retired: row.PlayerStateId == "2",
-					wins: row.WinCount,
-					losses: row.LossCount,
-					ties: row.TieCount,
-				});
+				result.push(getPlayerStats(row));
+			});
+			res.json(result);
+		})
+		.catch((err) => {
+			res.send(err);
+		});
+};
+
+exports.statsByMatch = (req, res) => {
+	query(`call fun.ListMatchPlayerStats(${req.params.id})`)
+		.then((queryResult) => {
+			let result = [];
+			queryResult[0].forEach(function (row) {
+				result.push(getPlayerStats(row));
 			});
 			res.json(result);
 		})
@@ -44,7 +66,7 @@ exports.stats = (req, res) => {
 
 function getPlayer(row) {
 	return {
-		id: row.Id,
+		playerId: row.Id,
 		name: row.Name,
 		number: row.Number,
 		dateOfBirth: row.DateOfBirth == null ? null : new Date(row.DateOfBirth).toISOString().slice(0, 10),

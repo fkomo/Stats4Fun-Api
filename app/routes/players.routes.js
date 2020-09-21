@@ -4,6 +4,7 @@ module.exports = (app) => {
 	var router = require("express").Router();
 
 	router.post("/stats", controller.stats);
+	router.get("/stats/match/:id", controller.statsByMatch);
 
 	app.use("/api/players", router);
 };
