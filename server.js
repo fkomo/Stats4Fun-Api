@@ -33,12 +33,12 @@ app.get("/", (req, res) => {
 	]});
 });
 
-require("./app/routes/enums.routes")(app);
-require("./app/routes/matches.routes")(app);
-require("./app/routes/match.routes")(app);
-require("./app/routes/players.routes")(app);
-require("./app/routes/player.routes")(app);
-require("./app/routes/stats.routes")(app);
+require("./server/app/routes/enums.routes")(app);
+require("./server/app/routes/matches.routes")(app);
+require("./server/app/routes/match.routes")(app);
+require("./server/app/routes/players.routes")(app);
+require("./server/app/routes/player.routes")(app);
+require("./server/app/routes/stats.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8042;
