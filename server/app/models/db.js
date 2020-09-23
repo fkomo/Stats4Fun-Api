@@ -10,6 +10,7 @@ var pool = mysql.createPool({
 });
 
 function query(sql) {
+	console.log(sql);
 	return new Promise((resolve, reject) => {
 		pool.getConnection(function (err, connection) {
 			if (err) {
