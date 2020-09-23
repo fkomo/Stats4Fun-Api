@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:12.7-alpine
 # working directory
 WORKDIR /usr/src/app
 # install app dependencies
