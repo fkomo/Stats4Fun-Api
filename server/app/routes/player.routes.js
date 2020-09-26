@@ -1,12 +1,14 @@
+const { authenticationRequired } = require("./auth");
+
 module.exports = (app) => {
 
 	const controller = require("../controllers/player.controller");
 	var router = require("express").Router();
 
 	router.get("/:id", controller.get);
-	router.post("", controller.insert);
-	router.put("/:id", controller.update);
-	router.delete("/:id", controller.delete);
+	router.post("", authenticationRequired, controller.insert);
+	router.put("/:id", authenticationRequired, controller.update);
+	router.delete("/:id", authenticationRequired, controller.delete);
 
 	app.use("/api/player", router);
 };

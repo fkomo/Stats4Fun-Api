@@ -1,16 +1,19 @@
+require("dotenv").config();
+
+const { authenticationRequired } = require("./server/app/routes/auth");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const NAME = 'stats4fun-api';
-const PORT = 8081;
-const HOST = '0.0.0.0';
-const CORS_CLIENT_ORIGIN = 'http://localhost:8080';
+const hostname = process.env.HOST;
+const port = process.env.PORT;
 
 const app = express();
-app.use(cors({
-	origin: CORS_CLIENT_ORIGIN,
-}));
+app.use(
+	cors({
+		origin: process.env.CORS_CLIENT_ORIGIN,
+	})
+);
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
@@ -20,40 +23,50 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // api index
 app.get("/", (req, res) => {
-	res.json({ "api-list": [ 
-		{ url: "/api/enums/teams", type: "get", description: "" },
-		{ url: "/api/enums/places", type: "get", description: "" },
-		{ url: "/api/enums/playerPositions", type: "get", description: "" },
-		{ url: "/api/enums/matchTypes", type: "get", description: "" },
-		{ url: "/api/enums/matchResults", type: "get", description: "" },
-		{ url: "/api/enums/seasons", type: "get", description: "" },
-		{ url: "/api/enums/competitions", type: "get", description: "" },
-		{ url: "/api/enums/playerNames", type: "get", description: "" },
-		{ url: "/api/enums/states", type: "get", description: "" },
-		{ url: "/api/enums/:enumName", type: "post", description: "" },
-		{ url: "/api/enums/:enumName/:id", type: "put", description: "" },
+	res.json({
+		"api-list": [
+			{ url: "/api/enums/teams", type: "get", description: "" },
+			{ url: "/api/enums/places", type: "get", description: "" },
+			{ url: "/api/enums/playerPositions", type: "get", description: "" },
+			{ url: "/api/enums/matchTypes", type: "get", description: "" },
+			{ url: "/api/enums/matchResults", type: "get", description: "" },
+			{ url: "/api/enums/seasons", type: "get", description: "" },
+			{ url: "/api/enums/competitions", type: "get", description: "" },
+			{ url: "/api/enums/playerNames", type: "get", description: "" },
+			{ url: "/api/enums/states", type: "get", description: "" },
+			{ url: "/api/enums/:enumName", type: "post", description: "" },
+			{ url: "/api/enums/:enumName/:id", type: "put", description: "" },
 
-		{ url: "/api/match/:id", type: "get", description: "" },
-		{ url: "/api/match", type: "post", description: "" },
-		{ url: "/api/match/:id", type: "put", description: "" },
-		{ url: "/api/match/:id", type: "delete", description: "" },
+			{ url: "/api/match/:id", type: "get", description: "" },
+			{ url: "/api/match", type: "post", description: "" },
+			{ url: "/api/match/:id", type: "put", description: "" },
+			{ url: "/api/match/:id", type: "delete", description: "" },
 
-		{ url: "/api/matches/player/:id", type: "get", description: "" },
-		{ url: "/api/matches/player/:id", type: "post", description: "" },
-		{ url: "/api/matches", type: "post", description: "" },
-		{ url: "/api/matches/teams/:teamId/:opponentTeamId", type: "get", description: "" },
+			{ url: "/api/matches/player/:id", type: "get", description: "" },
+			{ url: "/api/matches/player/:id", type: "post", description: "" },
+			{ url: "/api/matches", type: "post", description: "" },
+			{
+				url: "/api/matches/teams/:teamId/:opponentTeamId",
+				type: "get",
+				description: "",
+			},
 
-		{ url: "/api/player/:id", type: "get", description: "" },
-		{ url: "/api/player", type: "post", description: "" },
-		{ url: "/api/player/:id", type: "put", description: "" },
-		{ url: "/api/player/:id", type: "delete", description: "" },
+			{ url: "/api/player/:id", type: "get", description: "" },
+			{ url: "/api/player", type: "post", description: "" },
+			{ url: "/api/player/:id", type: "put", description: "" },
+			{ url: "/api/player/:id", type: "delete", description: "" },
 
-		{ url: "/api/players/stats", type: "post", description: "" },
-		{ url: "/api/players/stats/match/:id", type: "get", description: "" },
+			{ url: "/api/players/stats", type: "post", description: "" },
+			{
+				url: "/api/players/stats/match/:id",
+				type: "get",
+				description: "",
+			},
 
-		{ url: "/api/stats/player/:id", type: "get", description: "" },
-		{ url: "/api/stats/player/:id", type: "post", description: "" },
-	]});
+			{ url: "/api/stats/player/:id", type: "get", description: "" },
+			{ url: "/api/stats/player/:id", type: "post", description: "" },
+		],
+	});
 });
 
 // api routes
@@ -64,6 +77,10 @@ require("./server/app/routes/players.routes")(app);
 require("./server/app/routes/player.routes")(app);
 require("./server/app/routes/stats.routes")(app);
 
-app.listen(PORT, () => {
-	console.log(`${NAME} running on http://${HOST}:${PORT}`);
+app.get("/api/auth", authenticationRequired, (req, res) => {
+	res.json(req.jwt);
+});
+
+app.listen(port, () => {
+	console.log(`stats4fun-api is running on http://${hostname}:${port}`);
 });

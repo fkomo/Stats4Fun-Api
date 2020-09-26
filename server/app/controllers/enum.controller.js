@@ -140,6 +140,9 @@ exports.insert = (req, res) => {
 		return res.send("invalid enum type");
 
 	let enumBody = req.body;
+	if (enumBody == null || enumBody.name == null)
+		return res.send("invalid input");
+
 	query(`call fun.Insert${enumType}(\"${enumBody.name}\")`)
 		.then((queryResult) => {
 			res.json({ id: queryResult[0][0].Id, name: enumBody.name });
@@ -166,6 +169,9 @@ exports.update = (req, res) => {
 
 	let id = req.params.id;
 	let enumBody = req.body;
+	if (enumBody == null || enumBody.name == null || id == null)
+		return res.send("invalid input");
+
 	query(`call fun.Modify${enumType}(${id},\"${enumBody.name}\",null)`)
 		.then((queryResult) => {
 			res.json({ id: queryResult[0][0].Id, name: enumBody.name });

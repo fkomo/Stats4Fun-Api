@@ -1,12 +1,11 @@
 var mysql = require("mysql");
-var dbConfig = require("../config/db.config.js");
 
 var pool = mysql.createPool({
-	connectionLimit: dbConfig.connectionLimit,
-	host: dbConfig.host,
-	user: dbConfig.user,
-	password: dbConfig.password,
-	database: dbConfig.database,
+	host: process.env.DB_HOST,
+	user: process.env.DB_USER,
+	password: process.env.DB_PASSWORD,
+	database: process.env.DB_DATABASE,
+	connectionLimit: process.env.DB_CONNECTION_LIMIT,
 });
 
 function query(sql) {
