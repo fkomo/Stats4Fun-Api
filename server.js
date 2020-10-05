@@ -5,9 +5,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const hostname = process.env.HOST;
-const port = process.env.PORT;
-
 const app = express();
 app.use(
 	cors({
@@ -81,6 +78,23 @@ app.get("/api/auth", authenticationRequired, (req, res) => {
 	res.json(req.jwt);
 });
 
-app.listen(port, () => {
-	console.log(`stats4fun-api is running on http://${hostname}:${port}`);
+// const https = require("https");
+// const fs = require("fs");
+// https
+// 	.createServer(
+// 		{
+// 			key: fs.readFileSync(process.env.SSL_KEY_PEM),
+// 			cert: fs.readFileSync(process.env.SSL_CERT_PEM),
+// 			passphrase: process.env.SSL_PASSPHRASE,
+// 		},
+// 		app
+// 	)
+// 	.listen(process.env.PORT, process.env.HOST, () => {
+// 		console.log(
+// 			`stats4fun-api is running on https://${process.env.HOST}:${process.env.PORT}`
+// 		);
+// 	});
+
+app.listen(process.env.PORT, () => {
+	console.log(`stats4fun-api is running on http://${process.env.HOST}:${process.env.PORT}`);
 });

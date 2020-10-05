@@ -1,10 +1,12 @@
 const { query } = require("../models/db");
 
 function getPlayerStats(row) {
+	if (row == null) return null;
 	return {
 		playerId: row.PlayerId,
-		number: row.PlayerNumber,
 		name: row.Name,
+		number: row.PlayerNumber,
+		dateOfBirth: row.DateOfBirth,
 		playerPositionId: row.PlayerPositionId,
 		teamId: row.TeamId,
 		retired: row.PlayerStateId == "2",
@@ -35,8 +37,9 @@ exports.stats = (req, res) => {
 		req.body.playerPositionId == null ? "null" : req.body.playerPositionId;
 	let competitionId =
 		req.body.competitionId == null ? "null" : req.body.competitionId;
-	let playerId = req.body.playerId == null ? "null" : req.body.playerId;
-	let args = `${seasonId}, ${teamId}, ${matchTypeId}, ${placeId}, ${playerPositionId}, ${competitionId}, ${playerId}`;
+	let playerStateId =
+		req.body.playerStateId == null ? "null" : req.body.playerStateId;
+	let args = `${seasonId}, ${teamId}, ${matchTypeId}, ${placeId}, ${playerPositionId}, ${competitionId}, ${playerStateId}`;
 	query(`call fun.ListPlayerStats(${args})`)
 		.then((queryResult) => {
 			let result = [];
@@ -69,7 +72,10 @@ function getPlayer(row) {
 		playerId: row.Id,
 		name: row.Name,
 		number: row.Number,
-		dateOfBirth: row.DateOfBirth == null ? null : new Date(row.DateOfBirth).toISOString().slice(0, 10),
+		dateOfBirth:
+			row.DateOfBirth == null
+				? null
+				: new Date(row.DateOfBirth).toISOString().slice(0, 10),
 		playerPositionId: row.PlayerPositionId,
 		teamId: row.TeamId,
 		retired: row.StateId == "2",
@@ -117,6 +123,117 @@ exports.delete = (req, res) => {
 			res.json({
 				result: "ok",
 			});
+		})
+		.catch((err) => {
+			res.send(err);
+		});
+};
+
+exports.getMvp = (req, res) => {
+	const teamId =
+		req.params.teamId == null || req.params.teamId == 0
+			? "null"
+			: req.params.teamId;
+	query(`call fun.GetMVP(${req.params.seasonId},${teamId})`)
+		.then((queryResult) => {
+			res.json({ season: req.params.seasonId, player: getPlayerStats(queryResult[0][0]) });
+		})
+		.catch((err) => {
+			res.send(err);
+		});
+};
+
+exports.listMvps = (req, res) => {
+	const teamId =
+		req.params.teamId == null || req.params.teamId == 0
+			? "null"
+			: req.params.teamId;
+	query("call fun.ListSeasons()")
+		.then((qr1) => {
+			var seasons = [];
+			qr1[0].forEach(function (row) {
+				seasons.push(row.Season);
+			});
+
+			var result = [];
+			for (var i = 0; i < seasons.length; i++) {
+				const season = seasons[i];
+				query(`call fun.GetMVP(${season},${teamId})`)
+					.then((qr2) => {
+						result.push({
+							season: season,
+							player: getPlayerStats(
+								qr2[0].length == 1 ? qr2[0][0] : null
+							),
+						});
+						if (result.length == seasons.length) res.json(result);
+					})
+					.catch((err) => {
+						res.send(err);
+					});
+			}
+		})
+		.catch((err) => {
+			res.send(err);
+		});
+};
+
+exports.hattricks = (req, res) => {
+	const teamId =
+		req.params.teamId == null || req.params.teamId == 0
+			? "null"
+			: req.params.teamId;
+	query(`call fun.ListPlayersWithMostHattricks(${teamId})`)
+		.then((queryResult) => {
+			let result = [];
+			queryResult[0].forEach(function (row) {
+				result.push({
+					playerId: row.PlayerId,
+					playerName: row.PlayerName,
+					hattricks: row.HattrickCount,
+				});
+			});
+			res.json(result);
+		})
+		.catch((err) => {
+			res.send(err);
+		});
+};
+
+exports.goals = (req, res) => {
+	const teamId =
+		req.params.teamId == null || req.params.teamId == 0
+			? "null"
+			: req.params.teamId;
+	query(`call fun.ListMostGoalsCount(${teamId})`)
+		.then((qr1) => {
+			var result = [];
+			const resultCount = qr1[0].length;
+			for (var i = 0; i < resultCount; i++) {
+				query(
+					`call fun.ListPlayersWithGoals(${qr1[0][i].Goals}, ${teamId})`
+				)
+					.then((qr2) => {
+						let players = [];
+						qr2[0].forEach(function (row) {
+							players.push({
+								playerId: row.PlayerId,
+								playerName: row.PlayerName,
+								matchId: row.MatchId,
+							});
+						});
+						result.push({
+							goals: qr2[0][0].Goals,
+							players: players,
+						});
+						if (result.length == resultCount) {
+							res.json(result);
+						}
+					})
+					.catch((err) => {
+						res.send(err);
+					});
+			}
 		})
 		.catch((err) => {
 			res.send(err);

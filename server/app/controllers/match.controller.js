@@ -221,3 +221,57 @@ exports.delete = (req, res) => {
 			res.send(err);
 		});
 };
+
+exports.listBestWorst = (req, res) => {
+	const teamId =
+		req.params.teamId == null || req.params.teamId == 0
+			? "null"
+			: req.params.teamId;
+
+	query(`call fun.ListMatchesWithMostGoalsScored(${teamId})`)
+		.then((qr1) => {
+			var mostGoalsScored = [];
+			qr1[0].forEach(function (row) {
+				mostGoalsScored.push(getMatch(row));
+			});
+			query(`call fun.ListMatchesWithMostGoalsTaken(${teamId})`)
+				.then((qr2) => {
+					var mostGoalsTaken = [];
+					qr2[0].forEach(function (row) {
+						mostGoalsTaken.push(getMatch(row));
+					});
+					query(`call fun.ListMatchesWithHighestScoreDiff(${teamId})`)
+						.then((qr3) => {
+							var bestScoreDiff = [];
+							qr3[0].forEach(function (row) {
+								bestScoreDiff.push(getMatch(row));
+							});
+							query(`call fun.ListMatchesWithLowestScoreDiff(${teamId})`)
+								.then((qr4) => {
+									var worstScoreDiff = [];
+									qr4[0].forEach(function (row) {
+										worstScoreDiff.push(getMatch(row));
+									});
+									res.json({
+										mostGoalsScored: mostGoalsScored,
+										mostGoalsTaken: mostGoalsTaken,
+										bestScoreDiff: bestScoreDiff,
+										worstScoreDiff: worstScoreDiff,
+									});
+								})
+								.catch((err) => {
+									res.send(err);
+								});
+						})
+						.catch((err) => {
+							res.send(err);
+						});
+				})
+				.catch((err) => {
+					res.send(err);
+				});
+		})
+		.catch((err) => {
+			res.send(err);
+		});
+};

@@ -26,6 +26,7 @@ drop procedure fun.ModifyMatchResult;
 drop procedure fun.ListMatchesByPlayerId;
 drop procedure fun.ListPlayerStatsByPlayerId;
 drop procedure fun.FixMatchWinLossTie; 
+drop procedure fun.FixPlayers; 
 drop procedure fun.GetPlayer;
 drop procedure fun.InsertPlayer;
 drop procedure fun.ModifyPlayer;
@@ -41,6 +42,16 @@ drop procedure fun.ListPlayerStats;
 drop procedure fun.ListMatchPlayerStats;
 drop procedure fun.InsertPlayerStats;
 drop procedure fun.DeletePlayerStats;
+drop procedure fun.GetMVP;
+drop procedure fun.ListMatchesWithMostGoalsScored;
+drop procedure fun.ListMatchesWithMostGoalsTaken;
+drop procedure fun.ListMatchesWithHighestScoreDiff;
+drop procedure fun.ListMatchesWithLowestScoreDiff;
+drop procedure fun.ListCardsInSeasons;
+drop procedure fun.ListTeamStatsInSeasons;
+drop procedure fun.ListPlayersWithMostHattricks;
+drop procedure fun.ListMostGoalsCount;
+drop procedure fun.ListPlayersWithGoals;
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- CREATE STORED PROCEDURES
@@ -304,16 +315,16 @@ CREATE PROCEDURE fun.ModifyPlayer (
 	in stateId int
 ) BEGIN
 update
-	Player
+	Player p
 set
-	DateOfBirth = dateOfBirth,
-	TeamId = teamId,
-	Name = name,
-	Number = number,
-	PlayerPositionId = playerPositionId,
-	StateId = stateId
+	p.DateOfBirth = dateOfBirth,
+	p.TeamId = teamId,
+	p.Name = name,
+	p.Number = number,
+	p.PlayerPositionId = playerPositionId,
+    p.StateId = CASE WHEN stateId is null THEN p.StateId ELSE stateId END
 where
-	Id = playerId;
+	p.Id = playerId;
 
 call fun.GetPlayer(playerId);
 
@@ -361,6 +372,16 @@ set
 		WHEN (HomeTeamScore = AwayTeamScore) THEN 1
 		ELSE 0
 	END;
+
+END $ $
+
+CREATE PROCEDURE fun.FixPlayers() BEGIN
+update
+	fun.Player p
+set
+	p.StateId = 3
+where 
+	p.StateId is null;
 
 END $ $
 
@@ -832,11 +853,12 @@ CREATE PROCEDURE fun.ListPlayerStats (
 	in placeId int,
 	in playerPositionId int,
 	in competitionId int,
-	in playerId int
+	in playerStateId int
 ) BEGIN
 select
 	AVG(Player.Id) as PlayerId,
 	AVG(Player.Number) as PlayerNumber,
+	MIN(Player.DateOfBirth) as DateOfBirth,
 	Player.Name as Name,
 	COUNT(*) as GamesPlayed,
 	SUM(Goals) as Goals,
@@ -864,9 +886,8 @@ from
 	left join EnumState PlayerState on PlayerState.Id = Player.StateId
 where
 	(PlayerStats.StateId is null)
-	and (
-		Player.StateId is null
-		or Player.StateId <> 1
+	and ((playerStateId is null and (Player.StateId is null or Player.StateId <> 1))
+		or (playerStateId is not null and Player.StateId = playerStateId)
 	)
 	and (m.StateId is null)
 	and (Team.StateId is null)
@@ -875,10 +896,6 @@ where
 	and (EnumPlayerPosition.StateId is null)
 	and (EnumPlace.StateId is null)
 	and (EnumCompetition.StateId is null)
-	and (
-		playerId is null
-		or Player.Id = playerId
-	)
 	and (
 		teamId is null
 		or (
@@ -929,6 +946,7 @@ select
 	Player.Name,
 	Player.PlayerPositionId,
 	Player.TeamId,
+	Player.DateOfBirth,
 	Player.StateId as PlayerStateId,
 	PlayerStats.Goals,
 	PlayerStats.Assists,
@@ -1012,6 +1030,298 @@ set
 	ps.StateId = 1
 where
 	ps.MatchId = matchId;
+
+END $ $
+
+CREATE PROCEDURE fun.ListCardsInSeasons(
+	in teamId int
+) BEGIN
+select
+	(CASE WHEN MONTH(m.DateTime) < 8 THEN (YEAR(m.DateTime) - 1) ELSE YEAR(m.DateTime) END) as SeasonId,
+   	SUM(ps.YellowCards) as YellowCards,
+	SUM(ps.RedCards) as RedCards
+from
+	fun.Match m
+	inner join fun.PlayerStats ps on m.Id = ps.MatchId
+where
+	(ps.StateId is null)
+	and (m.StateId is null)
+	and (teamId is null
+		or (m.HomeTeamId = teamId or m.AwayTeamId = teamId))    
+group by
+	SeasonId
+order by
+	SeasonId asc;
+
+END $ $
+
+CREATE PROCEDURE fun.ListTeamStatsInSeasons(
+	in teamId int
+) BEGIN
+select
+	(CASE WHEN MONTH(m.DateTime) < 8 THEN (YEAR(m.DateTime) - 1) ELSE YEAR(m.DateTime) END) as SeasonId,
+    COUNT(m.Id) as GamesPlayed,
+    SUM(m.Win) as Wins,
+    SUM(m.Loss) as Losses,
+    SUM(m.tie) as Ties,
+    SUM((CASE WHEN homeTeam.Name like '4Fun%' THEN m.HomeTeamScore ELSE m.AwayTeamScore END)) as GoalsFor,
+	SUM((CASE WHEN awayTeam.Name like '4Fun%' THEN m.HomeTeamScore ELSE m.AwayTeamScore END)) as GoalsAgainst
+from
+	fun.Match m
+	inner join fun.EnumTeam as homeTeam on m.HomeTeamId = homeTeam.Id
+	inner join fun.EnumTeam as awayTeam on m.AwayTeamId = awayTeam.Id
+where
+	(m.StateId is null)
+	and (homeTeam.StateId is null)
+	and (awayTeam.StateId is null)
+	and (teamId is null
+		or (m.HomeTeamId = teamId or m.AwayTeamId = teamId))
+group by
+	SeasonId
+order by
+	SeasonId asc;
+
+END $ $
+
+CREATE PROCEDURE fun.ListMostGoalsCount(
+	in teamId int
+) BEGIN
+select
+    ps.Goals as Goals,
+    COUNT(*) as PlayerCount    
+from
+	fun.PlayerStats ps
+    inner join fun.Player p on ps.PlayerId = p.Id
+    inner join fun.Match m on ps.MatchId = m.Id
+where
+	(ps.StateId is null)
+    and (m.StateId is null)
+    and (p.StateId is null or p.StateId <> 1)
+    and (teamId is null
+		or (m.HomeTeamId = teamId or m.AwayTeamId = teamId))
+group by
+	Goals
+order by
+	Goals desc
+limit 3;
+
+END $ $
+
+CREATE PROCEDURE fun.ListPlayersWithGoals(
+	in goals int,
+    in teamId int
+) BEGIN
+select
+    ps.PlayerId as PlayerId,
+    p.Name as PlayerName,
+    ps.MatchId as MatchId,
+    goals as Goals
+from
+	fun.PlayerStats ps
+    inner join fun.Player p on ps.PlayerId = p.Id
+    inner join fun.Match m on ps.MatchId = m.Id
+where
+	(ps.StateId is null)
+    and (m.StateId is null)
+    and (p.StateId is null or p.StateId <> 1)
+    and (teamId is null
+		or (m.HomeTeamId = teamId or m.AwayTeamId = teamId))
+    and ps.Goals = goals
+order by
+	ps.PlayerId asc;
+
+END $ $
+
+CREATE PROCEDURE fun.ListPlayersWithMostHattricks(
+	in teamId int
+) BEGIN
+select
+    ps.PlayerId,
+    p.Name as PlayerName,
+    COUNT(*) as HattrickCount
+from
+	fun.PlayerStats ps
+    inner join fun.Player p on ps.PlayerId = p.Id
+    inner join fun.Match m on ps.MatchId = m.Id
+where
+	(ps.StateId is null)
+    and (m.StateId is null)
+    and (p.StateId is null or p.StateId <> 1)
+    and (teamId is null or
+		(m.homeTeamId = teamId or m.awayTeamId = teamId))
+    and ps.Goals >= 3
+group by
+	ps.PlayerId
+order by
+	HattrickCount desc
+limit 5;
+
+END $ $
+
+CREATE PROCEDURE fun.GetMVP(
+	in seasonId int,
+	in teamId int
+) BEGIN
+select
+	AVG(p.Id) as PlayerId,
+	AVG(p.Number) as PlayerNumber,
+	MIN(p.DateOfBirth) as DateOfBirth,
+	p.Name,
+	COUNT(*) as GamesPlayed,
+	SUM(ps.Goals) as Goals,
+	SUM(ps.Assists) as Assists,
+	SUM(ps.PosNegPoints) as PosNegPoints,
+	SUM(ps.Goals) + SUM(Assists) as Points,
+	SUM(ps.YellowCards) as YellowCards,
+	SUM(ps.RedCards) as RedCards,
+	AVG(p.PlayerPositionId) as PlayerPositionId,
+   	AVG(p.TeamId) as TeamId,
+    AVG(p.StateId) as PlayerStateId
+from
+	fun.PlayerStats ps
+	inner join fun.Player p on p.Id = ps.PlayerId
+	inner join fun.Match m on m.Id = ps.MatchId
+where
+	(ps.StateId is null)
+	and (p.StateId is null or p.StateId <> 1)
+	and (m.StateId is null)
+	and ((MONTH(m.DateTime) < 8 and (YEAR(m.DateTime) - 1) = seasonId) 
+		or (MONTH(m.DateTime) > 8 and (YEAR(m.DateTime) = seasonId)))
+    and (teamId is null or
+		(m.homeTeamId = teamId or m.awayTeamId = teamId))
+group by
+	p.Name
+order by
+	Points desc
+limit 1;
+
+END $ $
+
+CREATE PROCEDURE fun.ListMatchesWithMostGoalsScored(
+	in teamId int
+) BEGIN
+select
+    m.Id,
+    m.DateTime,
+    m.MatchTypeId,
+    m.PlaceId,
+    m.CompetitionId,
+    m.HomeTeamId,
+    m.AwayTeamId,
+    m.HomeTeamScore,
+    m.AwayTeamScore,
+    m.Win,
+    m.Loss,
+    m.Tie
+from
+	fun.Match m
+	inner join fun.EnumTeam as homeTeam on m.HomeTeamId = homeTeam.Id
+	inner join fun.EnumTeam as awayTeam on m.AwayTeamId = awayTeam.Id
+where
+	(m.StateId is null)
+	and (homeTeam.StateId is null)
+	and (awayTeam.StateId is null)
+    and (teamId is null
+		or (homeTeam.Id = teamId or awayTeam.Id = teamId))
+order by
+	(CASE WHEN homeTeam.Name like '4Fun%' THEN m.HomeTeamScore ELSE m.AwayTeamScore END) desc
+limit 3;
+
+END $ $
+
+CREATE PROCEDURE fun.ListMatchesWithMostGoalsTaken(
+	in teamId int
+) BEGIN
+select
+    m.Id,
+    m.DateTime,
+    m.MatchTypeId,
+    m.PlaceId,
+    m.CompetitionId,
+    m.HomeTeamId,
+    m.AwayTeamId,
+    m.HomeTeamScore,
+    m.AwayTeamScore,
+    m.Win,
+    m.Loss,
+    m.Tie
+from
+	fun.Match m
+	inner join fun.EnumTeam as homeTeam on m.HomeTeamId = homeTeam.Id
+	inner join fun.EnumTeam as awayTeam on m.AwayTeamId = awayTeam.Id
+where
+	(m.StateId is null)
+	and (homeTeam.StateId is null)
+	and (awayTeam.StateId is null)
+    and (teamId is null
+		or (homeTeam.Id = teamId or awayTeam.Id = teamId))
+order by
+	(CASE WHEN homeTeam.Name like '4Fun%' THEN m.AwayTeamScore ELSE m.HomeTeamScore END) desc
+limit 3;
+
+END $ $
+
+CREATE PROCEDURE fun.ListMatchesWithHighestScoreDiff(
+	in teamId int
+) BEGIN
+select
+    m.Id,
+    m.DateTime,
+    m.MatchTypeId,
+    m.PlaceId,
+    m.CompetitionId,
+    m.HomeTeamId,
+    m.AwayTeamId,
+    m.HomeTeamScore,
+    m.AwayTeamScore,
+    m.Win,
+    m.Loss,
+    m.Tie
+from
+	fun.Match m
+	inner join fun.EnumTeam as homeTeam on m.HomeTeamId = homeTeam.Id
+	inner join fun.EnumTeam as awayTeam on m.AwayTeamId = awayTeam.Id
+where
+	(m.StateId is null)
+	and (homeTeam.StateId is null)
+	and (awayTeam.StateId is null)
+    and (teamId is null
+		or (homeTeam.Id = teamId or awayTeam.Id = teamId))
+order by
+	(CASE WHEN homeTeam.Name like '4Fun%' THEN m.HomeTeamScore - m.AwayTeamScore ELSE m.AwayTeamScore - m.HomeTeamScore END) desc
+limit 3;
+
+END $ $
+
+CREATE PROCEDURE fun.ListMatchesWithLowestScoreDiff(
+	in teamId int
+) BEGIN
+select
+    m.Id,
+    m.DateTime,
+    m.MatchTypeId,
+    m.PlaceId,
+    m.CompetitionId,
+    m.HomeTeamId,
+    m.AwayTeamId,
+    m.HomeTeamScore,
+    m.AwayTeamScore,
+    m.Win,
+    m.Loss,
+    m.Tie
+from
+	fun.Match m
+	inner join fun.EnumTeam as homeTeam on m.HomeTeamId = homeTeam.Id
+	inner join fun.EnumTeam as awayTeam on m.AwayTeamId = awayTeam.Id
+where
+	(m.StateId is null)
+	and (homeTeam.StateId is null)
+	and (awayTeam.StateId is null)
+    and (teamId is null
+		or (homeTeam.Id = teamId or awayTeam.Id = teamId))
+order by
+	(CASE WHEN homeTeam.Name like '4Fun%' THEN m.AwayTeamScore - m.HomeTeamScore ELSE m.HomeTeamScore - m.AwayTeamScore END) desc
+limit 3;
 
 END $ $
 

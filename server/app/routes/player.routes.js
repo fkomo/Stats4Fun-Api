@@ -9,6 +9,7 @@ module.exports = (app) => {
 	router.post("", authenticationRequired, controller.insert);
 	router.put("/:id", authenticationRequired, controller.update);
 	router.delete("/:id", authenticationRequired, controller.delete);
+	router.get("/mvp/:seasonId/:teamId", controller.getMvp);
 
 	app.use("/api/player", router);
 };

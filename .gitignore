@@ -17,3 +17,6 @@ Thumbs.db
 
 # environment configuration
 .env
+
+# certificates
+*.pem
