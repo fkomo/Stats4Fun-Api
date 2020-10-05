@@ -16,7 +16,12 @@
 Thumbs.db
 
 # environment configuration
-.env
+.env-dev
+.env-test
+.env-prod
 
 # certificates
 *.pem
+
+# docker image
+stats4fun-api.dock.tar
