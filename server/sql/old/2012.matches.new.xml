@@ -1,0 +1,745 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Repository xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Matches>
+    <Match>
+      <Id>137</Id>
+      <DateTime>2013-04-28T12:20:00</DateTime>
+      <Type>LeagueMatch</Type>
+      <Place>ŠH Mladosť</Place>
+      <Season>2012</Season>
+      <League>2. SNL - Bratislava</League>
+      <HomeTeam>4Fun "A"</HomeTeam>
+      <AwayTeam>Maxima "A"</AwayTeam>
+      <HomeTeamScore>2</HomeTeamScore>
+      <AwayTeamScore>3</AwayTeamScore>
+      <Players>
+        <Player>
+          <Id>1092</Id>
+          <Name>Filip Komorovský</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>1</PosNegPoints>
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1093</Id>
+          <Name>Martin Novák</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>1</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>0</PosNegPoints>
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1094</Id>
+          <Name>Miro Židzik</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>0</PosNegPoints>
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1095</Id>
+          <Name>Pišta Jankulár</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>0</PosNegPoints>
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1096</Id>
+          <Name>Noro Lengyel</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-2</PosNegPoints>
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1097</Id>
+          <Name>Miňo Slimák</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-1</PosNegPoints>
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1098</Id>
+          <Name>Filip Prochác</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>1</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>0</PosNegPoints>
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1099</Id>
+          <Name>Fero Smolík</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1100</Id>
+          <Name>Lukáš Šlahučka</Name>
+          <Position>Goalkeeper</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>0</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+      </Players>
+    </Match>
+    <Match>
+      <Id>136</Id>
+      <DateTime>2013-04-21T17:50:00</DateTime>
+      <Type>LeagueMatch</Type>
+      <Place>ŠH Mladosť</Place>
+      <Season>2012</Season>
+      <League>1. Liga A - Bratislava</League>
+      <HomeTeam>KPSF ´92</HomeTeam>
+      <AwayTeam>4Fun "B"</AwayTeam>
+      <HomeTeamScore>9</HomeTeamScore>
+      <AwayTeamScore>4</AwayTeamScore>
+      <Players>
+        <Player>
+          <Id>1084</Id>
+          <Name>Mišo Horský</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>1</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-1</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1085</Id>
+          <Name>Marek Kováčik</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>1</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>-5</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1086</Id>
+          <Name>Rasťo Lučivjanský</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-3</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1087</Id>
+          <Name>Maťo Mutiš</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>1</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>-2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>1</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1088</Id>
+          <Name>Filip Prochác</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-4</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1089</Id>
+          <Name>Andy Peter</Name>
+          <Position>Goalkeeper</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>0</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1090</Id>
+          <Name>Andrej Slávik</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-3</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1091</Id>
+          <Name>Viktor Štefaňák</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>1</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>-2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+      </Players>
+    </Match>
+    <Match>
+      <Id>133</Id>
+      <DateTime>2013-04-21T15:30:00</DateTime>
+      <Type>LeagueMatch</Type>
+      <Place>ŠH Mladosť</Place>
+      <Season>2012</Season>
+      <League>2. SNL - Bratislava</League>
+      <HomeTeam>Čekan Mekenroff "B"</HomeTeam>
+      <AwayTeam>4Fun "A"</AwayTeam>
+      <HomeTeamScore>1</HomeTeamScore>
+      <AwayTeamScore>5</AwayTeamScore>
+      <Players>
+        <Player>
+          <Id>1060</Id>
+          <Name>Miro Židzik</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>2</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1059</Id>
+          <Name>Fero Smolík</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>2</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1061</Id>
+          <Name>Filip Komorovský</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>1</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1062</Id>
+          <Name>Filip Prochác</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1063</Id>
+          <Name>Mišo Horský</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1064</Id>
+          <Name>Marek Kováčik</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1065</Id>
+          <Name>Martin Novák</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1058</Id>
+          <Name>Lukáš Šlahučka</Name>
+          <Position>Goalkeeper</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>0</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+      </Players>
+    </Match>
+    <Match>
+      <Id>135</Id>
+      <DateTime>2013-04-19T21:00:00</DateTime>
+      <Type>LeagueMatch</Type>
+      <Place>ŠH Mladosť</Place>
+      <Season>2012</Season>
+      <League>1. Liga A - Bratislava</League>
+      <HomeTeam>4Fun "B"</HomeTeam>
+      <AwayTeam>Mokarabia</AwayTeam>
+      <HomeTeamScore>2</HomeTeamScore>
+      <AwayTeamScore>1</AwayTeamScore>
+      <Players>
+        <Player>
+          <Id>1075</Id>
+          <Name>Mišo Horský</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>2</Assists>
+          <PosNegPoints>2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1076</Id>
+          <Name>Marek Kováčik</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1077</Id>
+          <Name>Maťo Mutiš</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-1</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1078</Id>
+          <Name>Filip Prochác</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-1</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1079</Id>
+          <Name>Adam Ruckschloss</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1080</Id>
+          <Name>Andrej Slávik</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-1</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1081</Id>
+          <Name>Viktor Štefaňák</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-1</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1082</Id>
+          <Name>Mišo Židzik</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>2</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1083</Id>
+          <Name>Andy Peter</Name>
+          <Position>Goalkeeper</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>0</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+      </Players>
+    </Match>
+    <Match>
+      <Id>131</Id>
+      <DateTime>2013-04-14T17:40:00</DateTime>
+      <Type>LeagueMatch</Type>
+      <Place>ŠH Mladosť</Place>
+      <Season>2012</Season>
+      <League>2. SNL - Bratislava</League>
+      <HomeTeam>4Fun "A"</HomeTeam>
+      <AwayTeam>AFC Horden</AwayTeam>
+      <HomeTeamScore>2</HomeTeamScore>
+      <AwayTeamScore>2</AwayTeamScore>
+      <Players>
+        <Player>
+          <Id>1049</Id>
+          <Name>Lukáš Šlahučka</Name>
+          <Position>Goalkeeper</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>0</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>1</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1050</Id>
+          <Name>Filip Komorovský</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>1</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1051</Id>
+          <Name>Marek Kováčik</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>1</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>1</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1052</Id>
+          <Name>Miro Židzik</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>0</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1053</Id>
+          <Name>Pišta Jankulár</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-1</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1054</Id>
+          <Name>Miňo Slimák</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>0</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1055</Id>
+          <Name>Filip Prochác</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>0</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1056</Id>
+          <Name>Fero Smolík</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-2</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+      </Players>
+    </Match>
+    <Match>
+      <Id>134</Id>
+      <DateTime>2013-04-14T11:40:00</DateTime>
+      <Type>LeagueMatch</Type>
+      <Place>ŠH FTVŠ</Place>
+      <Season>2012</Season>
+      <League>1. Liga A - Bratislava</League>
+      <HomeTeam>4Fun "B"</HomeTeam>
+      <AwayTeam>FK Šport</AwayTeam>
+      <HomeTeamScore>4</HomeTeamScore>
+      <AwayTeamScore>2</AwayTeamScore>
+      <Players>
+        <Player>
+          <Id>1066</Id>
+          <Name>Majo Halaš</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>1</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>1</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1067</Id>
+          <Name>Mišo Horský</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>1</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1068</Id>
+          <Name>Pišta Jankulár</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>1</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>1</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1069</Id>
+          <Name>Maťo Mutiš</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>1</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>3</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1070</Id>
+          <Name>Andrej Slávik</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>-1</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1071</Id>
+          <Name>Gabo Štefaňák</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>1</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1072</Id>
+          <Name>Viktor Štefaňák</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>1</PosNegPoints>
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>1</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1073</Id>
+          <Name>Mišo Židzik</Name>
+          <Position>Player</Position>
+          <Number xsi:nil="true" />
+          <Goals>1</Goals>
+          <Assists>1</Assists>
+          <PosNegPoints>1</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+        <Player>
+          <Id>1074</Id>
+          <Name>Andy Peter</Name>
+          <Position>Goalkeeper</Position>
+          <Number xsi:nil="true" />
+          <Goals>0</Goals>
+          <Assists>0</Assists>
+          <PosNegPoints>0</PosNegPoints>
+          
+          <GamesPlayed>1</GamesPlayed>
+          <YellowCards>0</YellowCards>
+          <RedCards>0</RedCards>
+        </Player>
+      </Players>
+    </Match>
+    </Matches>
+  <LastUpdate>2013-04-29T17:42:48.6039709+00:00</LastUpdate>
+</Repository>

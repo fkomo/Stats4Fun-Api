@@ -8,6 +8,12 @@ RUN npm install
 # RUN npm ci --only=production
 # bundle app source
 COPY . .
+RUN rm -frv /usr/src/app/.env*
+
+COPY .env-dev ./.env
+# COPY .env-test ./.env
+# COPY .env-prod ./.env
+
 # set application user
 USER node
 # run application
