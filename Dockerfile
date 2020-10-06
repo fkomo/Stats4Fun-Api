@@ -11,9 +11,9 @@ COPY . .
 
 # copy env configuration
 RUN rm -frv /usr/src/app/.env*
-COPY .env-dev ./.env
-# COPY .env-test ./.env
-# COPY .env-prod ./.env
+COPY ./.env-dev ./.env
+#COPY ./.env-test ./.env
+#COPY ./.env-prod ./.env
 
 # set application user
 USER node
